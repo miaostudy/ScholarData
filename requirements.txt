@@ -1,0 +1,6 @@
+pandas
+requests
+tqdm
+lxml
+wordcloud
+matplotlib

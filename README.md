@@ -63,8 +63,20 @@
 
 
 # 代码
-封装了一个工具类`AMinerController`执行所有操作, 这样能尽可能避免重复的无意义的api调用，而且比较安全（大概率
+封装了几个工具类执行所有操作, 这样能尽可能避免重复的无意义的api调用，而且比较安全（大概吧
 
-| 命令                                  | 功能                           |
-|-------------------------------------|------------------------------|
-| batch_save_papers(author_name, org)      | 获取author_name的所有论文的摘要、关键词等信息 |
+| 命令                                 | 功能                           | 花费                |
+|------------------------------------|------------------------------|-------------------|
+| batch_save_papers(author_name, org) | 获取author_name的所有论文的摘要、关键词等信息 | 1.5 + 0.01 * 论文篇数 |
+| analyze_authors(authors_list)      | 自动分析所有作者的论文                  |
+
+# TODO
+1. 阅读csranking的数据生成、加载代码，做到根据地区、领域、学校筛选学者姓名
+2. csranking的有些名字aminor是搜不到的，需要特殊处理
+3. csranking的有些名字有奇怪的结构，比如csranking里是Yi Yang 0001，这个aminor里搜出来的另一个人，搜Yi Yang才是他。
+4. 搜Manmohan Krishna Chandraker最匹配的是M. R. Chandrakar，搜Nuno Vasconcelos最匹配的是Nuno M. Vasconcelos。说明有的外国人aminor也没有，有的存的又是其他写法。可能需要让大模型结合其他信息推理是不是同一个人？
+4. 重名的情况需要处理。
+5. 暂时没有办法在获取论文的详细信息前得到论文的发表时间，没法排除掉一些论文。
+6. 要是能定制api的话，输入作者名、机构名等学者信息，输出这个人的全部论文的详情，如果有正文更好。
+7. 能不能获取到aminor排行榜上的学者id
+8. 如果给作者名加入了不适当的组织信息也会导致搜不出来，比如{"name": "Nuno Vasconcelos", "org": "Univ. of California - San Diego"}无效，{"name": "Nuno Vasconcelos"}有效。但是这个组织名是csranking上的。
