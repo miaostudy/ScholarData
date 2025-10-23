@@ -4,3 +4,7 @@ tqdm
 lxml
 wordcloud
 matplotlib
+PyPDF2
+pdf2image
+pytesseract
+
