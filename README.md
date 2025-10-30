@@ -42,7 +42,7 @@
 
 输出：具有这些关键词的论文信息
 
- 
+
 ### 根据条件获取论文详情
 
 **0.2一次**
@@ -75,8 +75,25 @@
 2. csranking的有些名字aminor是搜不到的，需要特殊处理
 3. csranking的有些名字有奇怪的结构，比如csranking里是Yi Yang 0001，这个aminor里搜出来的另一个人，搜Yi Yang才是他。
 4. 搜Manmohan Krishna Chandraker最匹配的是M. R. Chandrakar，搜Nuno Vasconcelos最匹配的是Nuno M. Vasconcelos。说明有的外国人aminor也没有，有的存的又是其他写法。可能需要让大模型结合其他信息推理是不是同一个人？
-4. 重名的情况需要处理。
-5. 暂时没有办法在获取论文的详细信息前得到论文的发表时间，没法排除掉一些论文。
-6. 要是能定制api的话，输入作者名、机构名等学者信息，输出这个人的全部论文的详情，如果有正文更好。
-7. 能不能获取到aminor排行榜上的学者id
-8. 如果给作者名加入了不适当的组织信息也会导致搜不出来，比如{"name": "Nuno Vasconcelos", "org": "Univ. of California - San Diego"}无效，{"name": "Nuno Vasconcelos"}有效。但是这个组织名是csranking上的。
+5. 重名的情况需要处理。
+6. 暂时没有办法在获取论文的详细信息前得到论文的发表时间，没法排除掉一些论文。
+7. 要是能定制api的话，输入作者名、机构名等学者信息，输出这个人的全部论文的详情，如果有正文更好。
+8. 能不能获取到aminor排行榜上的学者id
+9. 如果给作者名加入了不适当的组织信息也会导致搜不出来，比如{"name": "Nuno Vasconcelos", "org": "Univ. of California - San Diego"}无效，{"name": "Nuno Vasconcelos"}有效。但是这个组织名是csranking上的。
+
+# 论文数据爬取
+
+## 目标
+
+爬取一本期刊的所有论文数据, 保存成json文件。
+
+## 步骤
+
+1. 期刊url：https://ieeexplore.ieee.org/xpl/RecentIssue.jsp?punumber=34，issue的url：https://ieeexplore.ieee.org/xpl/issues?punumber=34&isnumber=11192800获取到所有issues的链接
+2. 比如其中一个issues是：https://ieeexplore.ieee.org/xpl/tocresult.jsp?isnumber=11192800&punumber=34， 另一个issues是：https://ieeexplore.ieee.org/xpl/tocresult.jsp?isnumber=10269680&punumber=34，区别就是isnumber变了，那isnumber代表着issue的id，punumber代表着期刊id
+3. 在issue界面获取到所有论文url，比如https://ieeexplore.ieee.org/document/10269654/。
+4. 在论文界面获取到论文的所有详细信息。
+
+那我们需要
+
+首先对于punumber是34的这一本期刊，构造出url，找到他的所有isnumber是多少。进一步构造出url，找到改期所有论文的id是多少，进一步访问论文界面获取到所有信息
