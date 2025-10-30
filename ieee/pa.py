@@ -3,8 +3,8 @@ from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-from selenium.common.exceptions import TimeoutException, ElementClickInterceptedException, \
-    StaleElementReferenceException, NoSuchElementException
+from selenium.common.exceptions import TimeoutException, \
+    StaleElementReferenceException, NoSuchElementException, ElementClickInterceptedException
 from webdriver_manager.chrome import ChromeDriverManager
 from bs4 import BeautifulSoup
 import json
@@ -100,12 +100,12 @@ class IEEEScraper:
 
             # 等待指定元素加载完成
             if wait_for:
-                WebDriverWait(self.driver, 20).until(
+                WebDriverWait(self.driver, 30).until(
                     EC.presence_of_element_located(wait_for)
                 )
             else:
                 # 默认等待body加载完成
-                WebDriverWait(self.driver, 15).until(
+                WebDriverWait(self.driver, 30).until(
                     EC.presence_of_element_located((By.TAG_NAME, 'body'))
                 )
 
@@ -334,16 +334,16 @@ class IEEEScraper:
         return sorted_isnumbers
 
     def get_paper_links_from_issue(self, isnumber, force_refresh=False):
-        """从特定期获取所有论文链接，优化提取逻辑并处理分页"""
-        logging.info(f"获取期 isnumber={isnumber} 的论文链接...")
+        """从特定期获取所有论文ID，优化提取逻辑并处理分页"""
+        logging.info(f"获取期 isnumber={isnumber} 的论文ID...")
         issue_url = f"{self.base_url}/xpl/tocresult.jsp?isnumber={isnumber}&punumber={self.punumber}"
         cache_file = f'json_cache/issues/issue_{isnumber}.json'
 
         # 检查缓存
         if self.use_cache and os.path.exists(cache_file) and not force_refresh:
             cached_data = self._load_cached_json(cache_file)
-            if cached_data and 'paper_links' in cached_data:
-                return cached_data['paper_links']
+            if cached_data and 'paper_ids' in cached_data:  # 改为存储paper_ids
+                return cached_data['paper_ids']
 
         # 等待论文列表加载的特定元素
         wait_for = (By.CSS_SELECTOR, 'div.List-results-items')
@@ -353,68 +353,78 @@ class IEEEScraper:
         if not soup:
             return []
 
-        # 提取总论文数量，用于验证
+        # 提取总论文数量
         total_papers = 0
         try:
-            total_results_text = self.driver.find_element(By.CSS_SELECTOR, '.results-count').text
-            # 从文本中提取数字，例如 "Showing 1-25 of 86 results"
-            import re
-            match = re.search(r'of (\d+) results', total_results_text)
-            if match:
-                total_papers = int(match.group(1))
+            total_results_element = self.driver.find_element(
+                By.CSS_SELECTOR, '.Dashboard-header span.strong:last-child'
+            )
+            if total_results_element:
+                total_papers = int(total_results_element.text.strip())
                 logging.info(f"期 {isnumber} 总论文数量应为: {total_papers}")
         except Exception as e:
             logging.warning(f"无法获取总论文数量: {str(e)}")
+            try:
+                total_results_text = self.driver.find_element(By.CSS_SELECTOR, '.results-count').text
+                import re
+                match = re.search(r'of (\d+)', total_results_text)
+                if match:
+                    total_papers = int(match.group(1))
+                    logging.info(f"期 {isnumber} 总论文数量应为: {total_papers}")
+            except Exception as e2:
+                logging.warning(f"备选方案也无法获取总论文数量: {str(e2)}")
 
-        # 收集所有页面的论文链接
-        all_paper_links = []
+        # 收集所有页面的论文ID
+        all_paper_ids = []
         current_page = 1
         max_pages = 10  # 防止无限循环的安全限制
+        last_paper_count = -1  # 用于检测是否有新论文加载
 
         while current_page <= max_pages:
-            logging.info(f"处理第 {current_page} 页的论文链接")
+            logging.info(f"处理第 {current_page} 页的论文ID")
 
-            # 从当前页面提取论文链接
-            paper_links = self._extract_paper_links_from_page()
-            new_links_count = 0
+            # 从当前页面提取论文ID
+            paper_ids = self._extract_paper_ids_from_page()
+            new_ids_count = 0
 
-            for link in paper_links:
-                if link not in all_paper_links:
-                    all_paper_links.append(link)
-                    new_links_count += 1
+            for paper_id in paper_ids:
+                if paper_id not in all_paper_ids:
+                    all_paper_ids.append(paper_id)
+                    new_ids_count += 1
 
-            logging.info(f"第 {current_page} 页提取到 {new_links_count} 个新论文链接")
+            logging.info(f"第 {current_page} 页提取到 {new_ids_count} 个新论文ID")
 
-            # 检查是否已获取所有论文
-            if total_papers > 0 and len(all_paper_links) >= total_papers:
-                logging.info(f"已获取所有 {total_papers} 篇论文链接")
+            # 检查是否已获取所有论文或没有新论文加载
+            if (total_papers > 0 and len(all_paper_ids) >= total_papers) or new_ids_count == 0:
+                if new_ids_count == 0:
+                    logging.info("当前页未提取到新论文ID，停止翻页")
+                else:
+                    logging.info(f"已获取所有 {total_papers} 篇论文ID")
                 break
 
             # 尝试点击下一页
-            if not self._go_to_next_page():
+            if not self._go_to_next_page(current_page):
                 logging.info("没有更多页面可浏览")
                 break
 
             current_page += 1
             time.sleep(random.uniform(2, 4))  # 等待页面加载
 
-        # 保存论文链接到JSON缓存
-        self._save_json({'paper_links': all_paper_links}, cache_file)
+        # 保存论文ID到JSON缓存
+        self._save_json({'paper_ids': all_paper_ids}, cache_file)
 
-        logging.info(f"期 isnumber={isnumber} 共提取 {len(all_paper_links)} 篇论文链接")
-        return all_paper_links
+        logging.info(f"期 isnumber={isnumber} 共提取 {len(all_paper_ids)} 篇论文ID")
+        return all_paper_ids
 
-    def _extract_paper_links_from_page(self):
-        """从当前页面提取论文链接"""
-        paper_links = []
+    def _extract_paper_ids_from_page(self):
+        """从当前页面提取论文ID，过滤掉无关链接"""
+        paper_ids = []
 
-        # 尝试多种选择器提取论文链接
+        # 更精确的选择器，匹配主要论文链接
         selectors = [
-            'a[href*="/document/"][class*="title"]',  # 标题链接
-            'a[href*="/document/"][data-analytics_identifier="document_title"]',  # 带分析标识的标题
-            'div.List-results-items a[href*="/document/"]',  # 结果列表中的链接
-            'xpl-issue-results-items a[href*="/document/"]',  # 组件内的链接
-            'h2 a[href*="/document/"]'  # 标题标签内的链接
+            'xpl-issue-results-items h2 a[href*="/document/"]',
+            'div.List-results-items h3 a[href*="/document/"]',
+            'a.result-item-title[href*="/document/"]'
         ]
 
         doc_links = []
@@ -427,56 +437,112 @@ class IEEEScraper:
             except Exception as e:
                 logging.warning(f"使用选择器 {selector} 查找链接时出错: {str(e)}")
 
-        # 处理找到的链接
+        # 处理找到的链接，提取ID并过滤
         for link in doc_links:
             try:
                 href = link.get_attribute('href')
                 if not href:
                     continue
 
-                # 过滤掉不需要的链接
+                # 过滤掉包含引用或媒体的链接
                 if '/document/' in href and \
-                        '/tocresult.jsp' not in href and \
+                        '/citations' not in href and \
+                        '/media' not in href and \
                         'javascript:' not in href:
-                    full_url = urljoin(self.base_url, href)
-                    if full_url not in paper_links:
-                        paper_links.append(full_url)
+
+                    # 提取论文ID
+                    # 从类似 "/document/9858006/" 的链接中提取 "9858006"
+                    parts = href.split('/document/')
+                    if len(parts) > 1:
+                        paper_id = parts[1].split('/')[0]
+                        if paper_id and paper_id.isdigit() and paper_id not in paper_ids:
+                            paper_ids.append(paper_id)
             except StaleElementReferenceException:
                 logging.warning("元素已过期，跳过该链接")
             except Exception as e:
                 logging.warning(f"处理链接时出错: {str(e)}")
 
-        return paper_links
+        return paper_ids
 
-    def _go_to_next_page(self):
-        """点击下一页按钮，返回是否成功"""
+    def _go_to_next_page(self, current_page):
+        """点击下一页按钮，根据页码动态调整选择器，返回是否成功"""
+        # 尝试多种选择器定位下一页按钮，增加容错性
+        selectors = [
+            # 基于aria-label的通用选择器
+            'button[aria-label="Next page of search results"]',
+            # 基于类名前缀的选择器
+            'button[class^="stats-Pagination_arrow_next_"]',
+            # 基于父元素和类名的选择器
+            'li.next-btn button[aria-label="Next page of search results"]'
+        ]
+
+        # 尝试通过页码直接点击（备选方案）
+        page_number_locator = (By.CSS_SELECTOR, f'button[aria-label="Page {current_page + 1} of search results"]')
+
+        # 先尝试直接点击页码按钮
         try:
-            # 查找下一页按钮
-            next_page_locator = (By.CSS_SELECTOR, 'button[aria-label="Next Page"]')
-
-            # 检查按钮是否可用
-            next_button = self.driver.find_element(*next_page_locator)
-            if 'disabled' in next_button.get_attribute('class'):
-                return False
-
-            # 点击下一页
+            logging.info(f"尝试直接点击第 {current_page + 1} 页按钮")
             return self._click_and_wait(
-                next_page_locator,
+                page_number_locator,
                 wait_condition=EC.presence_of_element_located((By.CSS_SELECTOR, 'div.List-results-items'))
             )
-        except NoSuchElementException:
-            logging.info("未找到下一页按钮")
-            return False
         except Exception as e:
-            logging.error(f"点击下一页时出错: {str(e)}")
+            logging.warning(f"直接点击页码按钮失败: {str(e)}")
+
+        # 尝试各种下一页按钮选择器
+        for selector in selectors:
+            try:
+                next_page_locator = (By.CSS_SELECTOR, selector)
+
+                # 检查按钮是否存在
+                next_button = WebDriverWait(self.driver, 15).until(
+                    EC.presence_of_element_located(next_page_locator)
+                )
+
+                # 检查按钮是否可见且可用
+                if not next_button.is_displayed() or next_button.get_attribute('disabled'):
+                    continue
+
+                # 点击下一页
+                logging.info(f"使用选择器 '{selector}' 点击下一页")
+                return self._click_and_wait(
+                    next_page_locator,
+                    wait_condition=EC.presence_of_element_located((By.CSS_SELECTOR, 'div.List-results-items'))
+                )
+            except NoSuchElementException:
+                logging.info(f"未找到匹配选择器 '{selector}' 的下一页按钮")
+                continue
+            except TimeoutException:
+                logging.info(f"等待选择器 '{selector}' 的下一页按钮超时")
+                continue
+            except Exception as e:
+                logging.error(f"使用选择器 '{selector}' 点击下一页时出错: {str(e)}")
+                continue
+
+        # 如果所有方法都失败，尝试通过页面URL直接跳转
+        try:
+            current_url = self.driver.current_url
+            if 'page=' in current_url:
+                new_url = current_url.replace(f'page={current_page}', f'page={current_page + 1}')
+            else:
+                separator = '&' if '?' in current_url else '?'
+                new_url = f'{current_url}{separator}page={current_page + 1}'
+
+            logging.info(f"尝试通过URL直接跳转至第 {current_page + 1} 页: {new_url}")
+            self.driver.get(new_url)
+            WebDriverWait(self.driver, 30).until(
+                EC.presence_of_element_located((By.CSS_SELECTOR, 'div.List-results-items'))
+            )
+            time.sleep(random.uniform(2, 4))
+            return True
+        except Exception as e:
+            logging.error(f"通过URL跳转下一页失败: {str(e)}")
             return False
 
-    def get_paper_details(self, paper_url, force_refresh=False):
-        """获取单篇论文的详细信息，并保存JSON缓存"""
-        logging.info(f"获取论文详情: {paper_url}")
-        # 提取论文ID作为文件名
-        paper_id = paper_url.split('/document/')[1].split('/')[
-            0] if '/document/' in paper_url else f"paper_{hash(paper_url)}"
+    def get_paper_details(self, paper_id, force_refresh=False):
+        """根据论文ID获取单篇论文的详细信息，并保存JSON缓存"""
+        logging.info(f"获取论文详情: ID={paper_id}")
+        paper_url = f"{self.base_url}/document/{paper_id}/"
         cache_file = f'json_cache/papers/paper_{paper_id}.json'
 
         # 检查缓存
@@ -486,7 +552,7 @@ class IEEEScraper:
                 return cached_data
 
         # 等待论文详情加载的特定元素
-        wait_for = (By.CSS_SELECTOR, 'h1.document-title')
+        wait_for = (By.CSS_SELECTOR, 'span[_ngcontent-ng-c729932216]')  # 等待标题元素
 
         # 获取页面内容
         soup = self._get_soup(paper_url, wait_for=wait_for)
@@ -495,82 +561,87 @@ class IEEEScraper:
 
         try:
             # 提取标题
-            title_tag = soup.find('h1', class_='document-title') or \
-                        soup.find('h2', class_='title')
+            title_tag = soup.select_one('span[_ngcontent-ng-c729932216]')
             title = title_tag.get_text(strip=True) if title_tag else "No title"
 
             # 提取作者
             authors = []
-            author_selectors = [
-                'div.author-info > a',
-                '.authors > li > a',
-                '.author-name',
-                'xpl-author-list [data-name]'
-            ]
-            author_tags = []
-            for sel in author_selectors:
-                author_tags.extend(soup.select(sel))
+            author_tags = soup.select('div.authors-container.stats-document-authors-banner-authorsContainer a')
 
             for author in author_tags:
                 author_name = author.get_text(strip=True)
                 if author_name and author_name not in authors and len(author_name) > 1:
                     authors.append(author_name)
 
-            # 提取发表日期
-            date_tag = soup.find('div', class_='publication-date') or \
-                       soup.find('div', class_='pub-date') or \
-                       soup.find('div', string=lambda t: t and 'Date of Publication' in t)
-            date = date_tag.get_text(strip=True).replace('Date of Publication:', '').strip() if date_tag else "No date"
-
             # 提取摘要
-            abstract_tag = soup.find('div', class_='abstract-text') or \
-                           soup.find('div', id='abstract') or \
-                           soup.find('section', class_='abstract')
-            abstract = abstract_tag.get_text(strip=True) if abstract_tag else "No abstract"
+            abstract = "No abstract"
+            abstract_tag = soup.select_one('div[_ngcontent-ng-c4049499152][xplmathjax][xplreadinglenshighlight]')
+            if abstract_tag:
+                abstract = abstract_tag.get_text(strip=True)
+            else:
+                # 尝试点击Abstract按钮获取摘要
+                try:
+                    abstract_button = self.driver.find_element(
+                        By.CSS_SELECTOR, 'button.abstract-control'
+                    )
+                    if abstract_button:
+                        self.driver.execute_script("arguments[0].click();", abstract_button)
+                        time.sleep(1)  # 等待摘要展开
 
-            # 提取关键词
-            keywords = []
-            keyword_selectors = [
-                'div.index-terms > ul > li',
-                '.keywords > li',
-                'xpl-keyword-list li'
-            ]
-            keyword_tags = []
-            for sel in keyword_selectors:
-                keyword_tags.extend(soup.select(sel))
+                        # 重新获取页面内容
+                        updated_soup = BeautifulSoup(self.driver.page_source, 'html.parser')
+                        abstract_tag = updated_soup.select_one(
+                            'div[_ngcontent-ng-c4049499152][xplmathjax][xplreadinglenshighlight]')
+                        if abstract_tag:
+                            abstract = abstract_tag.get_text(strip=True)
+                except Exception as e:
+                    logging.warning(f"提取摘要时出错: {str(e)}")
 
-            for keyword in keyword_tags:
-                kw_text = keyword.get_text(strip=True)
-                if kw_text and kw_text not in keywords and len(kw_text) > 1:
-                    keywords.append(kw_text)
+            # 提取引用量
+            citations = "No citation data"
+            citation_tag = soup.select_one('div[_ngcontent-ng-c729932216].document-banner-metric-count')
+            if citation_tag:
+                citations = citation_tag.get_text(strip=True)
+
+            # 提取发表日期
+            publication_date = "No publication date"
+            date_tag = soup.select_one('div[_ngcontent-ng-c4049499152].u-pb-1.doc-abstract-pubdate')
+            if date_tag:
+                date_text = date_tag.get_text(strip=True)
+                # 提取日期部分
+                date_match = date_text.replace('Date of Publication:', '').strip()
+                if date_match:
+                    publication_date = date_match
 
             # 提取DOI
-            doi_tag = soup.find('a', class_='doi') or \
-                      soup.find('div', class_='doi') or \
-                      soup.find('meta', {'name': 'citation_doi'})
-            if doi_tag and doi_tag.name == 'meta':
-                doi = doi_tag.get('content', 'No DOI')
-            else:
-                doi = doi_tag.get_text(strip=True).replace('DOI:', '').strip() if doi_tag else "No DOI"
+            doi = "No DOI"
+            doi_tag = soup.select_one(
+                'div[_ngcontent-ng-c4049499152][data-analytics_identifier="document_abstract_doi"] a')
+            if doi_tag:
+                doi = doi_tag.get_text(strip=True)
 
-            # 提取页码
-            pages_tag = soup.find('div', class_='pagination') or \
-                        soup.find('div', class_='pages') or \
-                        soup.find('meta', {'name': 'citation_pages'})
-            if pages_tag and pages_tag.name == 'meta':
-                pages = pages_tag.get('content', 'No pages')
+            # 提取PubMed ID
+            pubmed_id = "No PubMed ID"
+            pubmed_tag = soup.select_one('div[_ngcontent-ng-c4049499152].u-pb-1:has(strong:contains("PubMed ID:")) a')
+            if pubmed_tag:
+                pubmed_id = pubmed_tag.get_text(strip=True)
             else:
-                pages = pages_tag.get_text(strip=True).replace('Pages:', '').strip() if pages_tag else "No pages"
+                # 备选方案
+                pubmed_div = soup.select_one('div[_ngcontent-ng-c4049499152].u-pb-1:has(strong:contains("PubMed ID:"))')
+                if pubmed_div:
+                    pubmed_text = pubmed_div.get_text(strip=True)
+                    pubmed_id = pubmed_text.replace('PubMed ID:', '').strip()
+
 
             paper_info = {
                 'id': paper_id,
                 'title': title,
                 'authors': authors,
-                'publication_date': date,
                 'abstract': abstract,
-                'keywords': keywords,
+                'citations': citations,
+                'publication_date': publication_date,
                 'doi': doi,
-                'pages': pages,
+                'pubmed_id': pubmed_id,
                 'url': paper_url
             }
 
@@ -579,7 +650,7 @@ class IEEEScraper:
 
             return paper_info
         except Exception as e:
-            logging.error(f"解析论文 {paper_url} 失败: {str(e)}")
+            logging.error(f"解析论文 ID={paper_id} 失败: {str(e)}")
             return None
 
     def run(self, max_decades=None, max_years_per_decade=None, max_issues=None, max_papers_per_issue=None,
@@ -591,12 +662,12 @@ class IEEEScraper:
             isnumbers = isnumbers[:max_issues]
 
         for isnumber in tqdm(isnumbers, desc="处理期刊期数"):
-            paper_links = self.get_paper_links_from_issue(isnumber, force_refresh=force_refresh)
+            paper_ids = self.get_paper_links_from_issue(isnumber, force_refresh=force_refresh)
             if max_papers_per_issue:
-                paper_links = paper_links[:max_papers_per_issue]
+                paper_ids = paper_ids[:max_papers_per_issue]
 
-            for paper_link in tqdm(paper_links, desc=f"处理论文 (期: {isnumber})", leave=False):
-                paper_details = self.get_paper_details(paper_link, force_refresh=force_refresh)
+            for paper_id in tqdm(paper_ids, desc=f"处理论文 (期: {isnumber})", leave=False):
+                paper_details = self.get_paper_details(paper_id, force_refresh=force_refresh)
                 if paper_details:
                     self.all_papers.append(paper_details)
 
@@ -618,13 +689,9 @@ if __name__ == "__main__":
     # 爬取punumber=34的期刊，可通过use_cache=False禁用缓存
     scraper = IEEEScraper(punumber=34, use_cache=True)
 
-    # 测试时使用限制参数（根据需要调整）
-    # 如需完整爬取，移除参数即可：scraper.run()
     # force_refresh=True 可强制刷新缓存
     scraper.run(
-        max_issues=3,  # 限制处理的期数
-        max_papers_per_issue=5,  # 每期限制处理的论文数
-        force_refresh=False  # 是否强制刷新缓存
+        force_refresh=False
     )
 
     scraper.save_to_json()
