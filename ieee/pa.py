@@ -551,8 +551,8 @@ class IEEEScraper:
             if cached_data:
                 return cached_data
 
-        # 等待论文详情加载的特定元素
-        wait_for = (By.CSS_SELECTOR, 'span[_ngcontent-ng-c729932216]')  # 等待标题元素
+        # 等待论文标题元素加载完成（使用更精确的选择器）
+        wait_for = (By.CSS_SELECTOR, 'h1.document-title span')
 
         # 获取页面内容
         soup = self._get_soup(paper_url, wait_for=wait_for)
@@ -560,9 +560,32 @@ class IEEEScraper:
             return None
 
         try:
-            # 提取标题
-            title_tag = soup.select_one('span[_ngcontent-ng-c729932216]')
-            title = title_tag.get_text(strip=True) if title_tag else "No title"
+            # 提取标题 - 使用更精确的选择器组合
+            # 主选择器：匹配h1标题内的span
+            title_tag = soup.select_one('h1.document-title span')
+
+            # 备选选择器1：使用ngcontent属性但结合h1
+            if not title_tag:
+                title_tag = soup.select_one('h1[_ngcontent-ng-c729932216] span[_ngcontent-ng-c729932216]')
+
+            # 备选选择器2：仅使用class
+            if not title_tag:
+                title_tag = soup.select_one('.document-title span')
+
+            # 如果找到标题标签则提取文本，否则标记为无标题
+            if title_tag:
+                title = title_tag.get_text(strip=True)
+                # 过滤无效标题
+                if "Journals & Magazines" in title or len(title) < 5:
+                    logging.warning(f"可能的无效标题: {title}，尝试其他方式提取")
+                    # 尝试从页面元数据中提取标题
+                    meta_title = soup.select_one('meta[property="og:title"]')
+                    if meta_title:
+                        title = meta_title.get('content', '').strip()
+            else:
+                title = "No title"
+
+            logging.info(f"提取到标题: {title}")
 
             # 提取作者
             authors = []
@@ -631,7 +654,6 @@ class IEEEScraper:
                 if pubmed_div:
                     pubmed_text = pubmed_div.get_text(strip=True)
                     pubmed_id = pubmed_text.replace('PubMed ID:', '').strip()
-
 
             paper_info = {
                 'id': paper_id,

@@ -1434,3 +1434,529 @@ Symbols not available. Dumping unresolved backtrace:
 2025-10-31 00:59:50,074 - INFO - 开始爬取IEEE期刊论文数据...
 2025-10-31 00:59:50,074 - INFO - 开始获取所有年代、所有年份的isnumber...
 2025-10-31 00:59:55,646 - INFO - 获取页面 https://ieeexplore.ieee.org/xpl/issues?punumber=34
+2025-10-31 01:03:11,136 - INFO - ====== WebDriver manager ======
+2025-10-31 01:03:14,657 - INFO - Get LATEST chromedriver version for google-chrome
+2025-10-31 01:03:14,888 - INFO - Get LATEST chromedriver version for google-chrome
+2025-10-31 01:03:15,117 - INFO - Driver [C:\Users\Administrator\.wdm\drivers\chromedriver\win64\142.0.7444.59\chromedriver-win32/chromedriver.exe] found in cache
+2025-10-31 01:03:16,325 - INFO - 开始爬取IEEE期刊论文数据...
+2025-10-31 01:03:16,325 - INFO - 开始获取所有年代、所有年份的isnumber...
+2025-10-31 01:03:22,333 - INFO - 获取页面 https://ieeexplore.ieee.org/xpl/issues?punumber=34
+2025-10-31 01:03:29,082 - INFO - 找到年代标签: ['2020s', '2010s', '2000s', '1990s', '1980s', '1970s']
+2025-10-31 01:03:29,102 - INFO - 
+===== 开始处理年代: 2020s =====
+2025-10-31 01:03:31,759 - WARNING - 点击元素 ('xpath', '//div[contains(@class, "issue-details-past-tabs") and not(contains(@class, "year"))]//a[text()="2020s"]') 失败: Message: element click intercepted: Element <a _ngcontent-ng-c3237329536="">...</a> is not clickable at point (67, 624). Other element would receive the click: <li _ngcontent-ng-c3237329536="" class="active">...</li>
+  (Session info: chrome=142.0.7444.60); For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#elementclickinterceptedexception
+Stacktrace:
+Symbols not available. Dumping unresolved backtrace:
+	0xeb58c3
+	0xeb5904
+	0xcce76d
+	0xd205e0
+	0xd1e943
+	0xd1c3e7
+	0xd1b65d
+	0xd0fdf5
+	0xd3c96c
+	0xd0f854
+	0xd3cb24
+	0xd5eea6
+	0xd3c766
+	0xd0dac0
+	0xd0ede4
+	0x1137974
+	0x1132bea
+	0xede5b4
+	0xecdd28
+	0xed4d8d
+	0xebded8
+	0xebe09c
+	0xea7d1a
+	0x76f100c9
+	0x772b7b1e
+	0x772b7aee
+
+2025-10-31 01:03:34,203 - INFO - 使用JavaScript点击元素: ('xpath', '//div[contains(@class, "issue-details-past-tabs") and not(contains(@class, "year"))]//a[text()="2020s"]')
+2025-10-31 01:03:35,947 - INFO - 年代 2020s 包含年份: ['2025', '2024', '2023', '2022', '2021', '2020']
+2025-10-31 01:03:35,948 - INFO - 数据已保存到 json_cache/decades/decade_2020s.json
+2025-10-31 01:03:35,949 - INFO - 处理年份: 2025
+2025-10-31 01:03:37,469 - INFO - 点击元素: ('xpath', '//div[contains(@class, "issue-details-past-tabs") and contains(@class, "year")]//a[text()="2025"]')
+2025-10-31 01:03:42,093 - INFO - 年份 2025 找到 11 个可能的issue链接
+2025-10-31 01:03:42,094 - INFO - 数据已保存到 json_cache/years/year_2025.json
+2025-10-31 01:03:42,094 - INFO - 处理年份: 2024
+2025-10-31 01:03:43,340 - INFO - 点击元素: ('xpath', '//div[contains(@class, "issue-details-past-tabs") and contains(@class, "year")]//a[text()="2024"]')
+2025-10-31 01:03:49,773 - INFO - 年份 2024 找到 12 个可能的issue链接
+2025-10-31 01:03:49,774 - INFO - 数据已保存到 json_cache/years/year_2024.json
+2025-10-31 01:03:49,774 - INFO - 处理年份: 2023
+2025-10-31 01:03:51,655 - INFO - 点击元素: ('xpath', '//div[contains(@class, "issue-details-past-tabs") and contains(@class, "year")]//a[text()="2023"]')
+2025-10-31 01:03:56,427 - INFO - 年份 2023 找到 12 个可能的issue链接
+2025-10-31 01:03:56,428 - INFO - 数据已保存到 json_cache/years/year_2023.json
+2025-10-31 01:03:56,428 - INFO - 处理年份: 2022
+2025-10-31 01:03:58,459 - INFO - 点击元素: ('xpath', '//div[contains(@class, "issue-details-past-tabs") and contains(@class, "year")]//a[text()="2022"]')
+2025-10-31 01:04:04,718 - INFO - 年份 2022 找到 17 个可能的issue链接
+2025-10-31 01:04:04,719 - INFO - 数据已保存到 json_cache/years/year_2022.json
+2025-10-31 01:04:04,719 - INFO - 处理年份: 2021
+2025-10-31 01:04:06,656 - INFO - 点击元素: ('xpath', '//div[contains(@class, "issue-details-past-tabs") and contains(@class, "year")]//a[text()="2021"]')
+2025-10-31 01:04:10,815 - INFO - 年份 2021 找到 12 个可能的issue链接
+2025-10-31 01:04:10,816 - INFO - 数据已保存到 json_cache/years/year_2021.json
+2025-10-31 01:04:10,816 - INFO - 处理年份: 2020
+2025-10-31 01:04:12,915 - INFO - 点击元素: ('xpath', '//div[contains(@class, "issue-details-past-tabs") and contains(@class, "year")]//a[text()="2020"]')
+2025-10-31 01:04:18,493 - INFO - 年份 2020 找到 12 个可能的issue链接
+2025-10-31 01:04:18,493 - INFO - 数据已保存到 json_cache/years/year_2020.json
+2025-10-31 01:04:18,494 - INFO - 
+===== 开始处理年代: 2010s =====
+2025-10-31 01:04:20,129 - INFO - 点击元素: ('xpath', '//div[contains(@class, "issue-details-past-tabs") and not(contains(@class, "year"))]//a[text()="2010s"]')
+2025-10-31 01:04:22,708 - INFO - 年代 2010s 包含年份: ['2019', '2018', '2017', '2016', '2015', '2014', '2013', '2012', '2011', '2010']
+2025-10-31 01:04:22,710 - INFO - 数据已保存到 json_cache/decades/decade_2010s.json
+2025-10-31 01:04:22,710 - INFO - 处理年份: 2019
+2025-10-31 01:04:24,532 - INFO - 点击元素: ('xpath', '//div[contains(@class, "issue-details-past-tabs") and contains(@class, "year")]//a[text()="2019"]')
+2025-10-31 01:04:29,567 - INFO - 年份 2019 找到 12 个可能的issue链接
+2025-10-31 01:04:29,568 - INFO - 数据已保存到 json_cache/years/year_2019.json
+2025-10-31 01:04:29,568 - INFO - 处理年份: 2018
+2025-10-31 01:04:31,154 - INFO - 点击元素: ('xpath', '//div[contains(@class, "issue-details-past-tabs") and contains(@class, "year")]//a[text()="2018"]')
+2025-10-31 01:04:36,567 - INFO - 年份 2018 找到 12 个可能的issue链接
+2025-10-31 01:04:36,568 - INFO - 数据已保存到 json_cache/years/year_2018.json
+2025-10-31 01:04:36,568 - INFO - 处理年份: 2017
+2025-10-31 01:04:38,596 - INFO - 点击元素: ('xpath', '//div[contains(@class, "issue-details-past-tabs") and contains(@class, "year")]//a[text()="2017"]')
+2025-10-31 01:04:44,053 - INFO - 年份 2017 找到 12 个可能的issue链接
+2025-10-31 01:04:44,054 - INFO - 数据已保存到 json_cache/years/year_2017.json
+2025-10-31 01:04:44,054 - INFO - 处理年份: 2016
+2025-10-31 01:04:45,692 - INFO - 点击元素: ('xpath', '//div[contains(@class, "issue-details-past-tabs") and contains(@class, "year")]//a[text()="2016"]')
+2025-10-31 01:04:51,814 - INFO - 年份 2016 找到 12 个可能的issue链接
+2025-10-31 01:04:51,815 - INFO - 数据已保存到 json_cache/years/year_2016.json
+2025-10-31 01:04:51,815 - INFO - 处理年份: 2015
+2025-10-31 01:04:53,203 - INFO - 点击元素: ('xpath', '//div[contains(@class, "issue-details-past-tabs") and contains(@class, "year")]//a[text()="2015"]')
+2025-10-31 01:04:59,740 - INFO - 年份 2015 找到 12 个可能的issue链接
+2025-10-31 01:04:59,741 - INFO - 数据已保存到 json_cache/years/year_2015.json
+2025-10-31 01:04:59,741 - INFO - 处理年份: 2014
+2025-10-31 01:05:00,957 - INFO - 点击元素: ('xpath', '//div[contains(@class, "issue-details-past-tabs") and contains(@class, "year")]//a[text()="2014"]')
+2025-10-31 01:05:05,550 - INFO - 年份 2014 找到 12 个可能的issue链接
+2025-10-31 01:05:05,551 - INFO - 数据已保存到 json_cache/years/year_2014.json
+2025-10-31 01:05:05,551 - INFO - 处理年份: 2013
+2025-10-31 01:05:07,672 - INFO - 点击元素: ('xpath', '//div[contains(@class, "issue-details-past-tabs") and contains(@class, "year")]//a[text()="2013"]')
+2025-10-31 01:05:11,703 - INFO - 年份 2013 找到 12 个可能的issue链接
+2025-10-31 01:05:11,704 - INFO - 数据已保存到 json_cache/years/year_2013.json
+2025-10-31 01:05:11,705 - INFO - 处理年份: 2012
+2025-10-31 01:05:13,498 - INFO - 点击元素: ('xpath', '//div[contains(@class, "issue-details-past-tabs") and contains(@class, "year")]//a[text()="2012"]')
+2025-10-31 01:05:17,215 - INFO - 年份 2012 找到 12 个可能的issue链接
+2025-10-31 01:05:17,217 - INFO - 数据已保存到 json_cache/years/year_2012.json
+2025-10-31 01:05:17,217 - INFO - 处理年份: 2011
+2025-10-31 01:05:18,705 - INFO - 点击元素: ('xpath', '//div[contains(@class, "issue-details-past-tabs") and contains(@class, "year")]//a[text()="2011"]')
+2025-10-31 01:05:22,702 - INFO - 年份 2011 找到 12 个可能的issue链接
+2025-10-31 01:05:22,703 - INFO - 数据已保存到 json_cache/years/year_2011.json
+2025-10-31 01:05:22,704 - INFO - 处理年份: 2010
+2025-10-31 01:05:23,977 - INFO - 点击元素: ('xpath', '//div[contains(@class, "issue-details-past-tabs") and contains(@class, "year")]//a[text()="2010"]')
+2025-10-31 01:05:29,812 - INFO - 年份 2010 找到 12 个可能的issue链接
+2025-10-31 01:05:29,813 - INFO - 数据已保存到 json_cache/years/year_2010.json
+2025-10-31 01:05:29,813 - INFO - 
+===== 开始处理年代: 2000s =====
+2025-10-31 01:05:31,053 - INFO - 点击元素: ('xpath', '//div[contains(@class, "issue-details-past-tabs") and not(contains(@class, "year"))]//a[text()="2000s"]')
+2025-10-31 01:05:33,523 - INFO - 年代 2000s 包含年份: ['2009', '2008', '2007', '2006', '2005', '2004', '2003', '2002', '2001', '2000']
+2025-10-31 01:05:33,525 - INFO - 数据已保存到 json_cache/decades/decade_2000s.json
+2025-10-31 01:05:33,525 - INFO - 处理年份: 2009
+2025-10-31 01:05:35,549 - INFO - 点击元素: ('xpath', '//div[contains(@class, "issue-details-past-tabs") and contains(@class, "year")]//a[text()="2009"]')
+2025-10-31 01:05:39,729 - INFO - 年份 2009 找到 12 个可能的issue链接
+2025-10-31 01:05:39,730 - INFO - 数据已保存到 json_cache/years/year_2009.json
+2025-10-31 01:05:39,730 - INFO - 处理年份: 2008
+2025-10-31 01:05:41,253 - INFO - 点击元素: ('xpath', '//div[contains(@class, "issue-details-past-tabs") and contains(@class, "year")]//a[text()="2008"]')
+2025-10-31 01:05:44,895 - INFO - 年份 2008 找到 12 个可能的issue链接
+2025-10-31 01:05:44,896 - INFO - 数据已保存到 json_cache/years/year_2008.json
+2025-10-31 01:05:44,896 - INFO - 处理年份: 2007
+2025-10-31 01:05:46,070 - INFO - 点击元素: ('xpath', '//div[contains(@class, "issue-details-past-tabs") and contains(@class, "year")]//a[text()="2007"]')
+2025-10-31 01:05:49,940 - INFO - 年份 2007 找到 12 个可能的issue链接
+2025-10-31 01:05:49,941 - INFO - 数据已保存到 json_cache/years/year_2007.json
+2025-10-31 01:05:49,941 - INFO - 处理年份: 2006
+2025-10-31 01:05:51,368 - INFO - 点击元素: ('xpath', '//div[contains(@class, "issue-details-past-tabs") and contains(@class, "year")]//a[text()="2006"]')
+2025-10-31 01:05:55,681 - INFO - 年份 2006 找到 12 个可能的issue链接
+2025-10-31 01:05:55,682 - INFO - 数据已保存到 json_cache/years/year_2006.json
+2025-10-31 01:05:55,682 - INFO - 处理年份: 2005
+2025-10-31 01:05:57,516 - INFO - 点击元素: ('xpath', '//div[contains(@class, "issue-details-past-tabs") and contains(@class, "year")]//a[text()="2005"]')
+2025-10-31 01:06:02,711 - INFO - 年份 2005 找到 12 个可能的issue链接
+2025-10-31 01:06:02,712 - INFO - 数据已保存到 json_cache/years/year_2005.json
+2025-10-31 01:06:02,712 - INFO - 处理年份: 2004
+2025-10-31 01:06:04,759 - INFO - 点击元素: ('xpath', '//div[contains(@class, "issue-details-past-tabs") and contains(@class, "year")]//a[text()="2004"]')
+2025-10-31 01:06:10,348 - INFO - 年份 2004 找到 12 个可能的issue链接
+2025-10-31 01:06:10,349 - INFO - 数据已保存到 json_cache/years/year_2004.json
+2025-10-31 01:06:10,349 - INFO - 处理年份: 2003
+2025-10-31 01:06:11,866 - INFO - 点击元素: ('xpath', '//div[contains(@class, "issue-details-past-tabs") and contains(@class, "year")]//a[text()="2003"]')
+2025-10-31 01:06:17,629 - INFO - 年份 2003 找到 12 个可能的issue链接
+2025-10-31 01:06:17,630 - INFO - 数据已保存到 json_cache/years/year_2003.json
+2025-10-31 01:06:17,631 - INFO - 处理年份: 2002
+2025-10-31 01:06:18,996 - INFO - 点击元素: ('xpath', '//div[contains(@class, "issue-details-past-tabs") and contains(@class, "year")]//a[text()="2002"]')
+2025-10-31 01:06:24,481 - INFO - 年份 2002 找到 12 个可能的issue链接
+2025-10-31 01:06:24,483 - INFO - 数据已保存到 json_cache/years/year_2002.json
+2025-10-31 01:06:24,483 - INFO - 处理年份: 2001
+2025-10-31 01:06:26,194 - INFO - 点击元素: ('xpath', '//div[contains(@class, "issue-details-past-tabs") and contains(@class, "year")]//a[text()="2001"]')
+2025-10-31 01:06:30,037 - INFO - 年份 2001 找到 12 个可能的issue链接
+2025-10-31 01:06:30,038 - INFO - 数据已保存到 json_cache/years/year_2001.json
+2025-10-31 01:06:30,039 - INFO - 处理年份: 2000
+2025-10-31 01:06:31,650 - INFO - 点击元素: ('xpath', '//div[contains(@class, "issue-details-past-tabs") and contains(@class, "year")]//a[text()="2000"]')
+2025-10-31 01:06:37,469 - INFO - 年份 2000 找到 12 个可能的issue链接
+2025-10-31 01:06:37,470 - INFO - 数据已保存到 json_cache/years/year_2000.json
+2025-10-31 01:06:37,470 - INFO - 
+===== 开始处理年代: 1990s =====
+2025-10-31 01:06:38,940 - INFO - 点击元素: ('xpath', '//div[contains(@class, "issue-details-past-tabs") and not(contains(@class, "year"))]//a[text()="1990s"]')
+2025-10-31 01:06:40,694 - INFO - 年代 1990s 包含年份: ['1999', '1998', '1997', '1996', '1995', '1994', '1993', '1992', '1991', '1990']
+2025-10-31 01:06:40,695 - INFO - 数据已保存到 json_cache/decades/decade_1990s.json
+2025-10-31 01:06:40,696 - INFO - 处理年份: 1999
+2025-10-31 01:06:42,700 - INFO - 点击元素: ('xpath', '//div[contains(@class, "issue-details-past-tabs") and contains(@class, "year")]//a[text()="1999"]')
+2025-10-31 01:06:49,005 - INFO - 年份 1999 找到 12 个可能的issue链接
+2025-10-31 01:06:49,007 - INFO - 数据已保存到 json_cache/years/year_1999.json
+2025-10-31 01:06:49,007 - INFO - 处理年份: 1998
+2025-10-31 01:06:50,230 - INFO - 点击元素: ('xpath', '//div[contains(@class, "issue-details-past-tabs") and contains(@class, "year")]//a[text()="1998"]')
+2025-10-31 01:06:56,011 - INFO - 年份 1998 找到 12 个可能的issue链接
+2025-10-31 01:06:56,012 - INFO - 数据已保存到 json_cache/years/year_1998.json
+2025-10-31 01:06:56,012 - INFO - 处理年份: 1997
+2025-10-31 01:06:57,247 - INFO - 点击元素: ('xpath', '//div[contains(@class, "issue-details-past-tabs") and contains(@class, "year")]//a[text()="1997"]')
+2025-10-31 01:07:01,830 - INFO - 年份 1997 找到 12 个可能的issue链接
+2025-10-31 01:07:01,831 - INFO - 数据已保存到 json_cache/years/year_1997.json
+2025-10-31 01:07:01,831 - INFO - 处理年份: 1996
+2025-10-31 01:07:03,125 - INFO - 点击元素: ('xpath', '//div[contains(@class, "issue-details-past-tabs") and contains(@class, "year")]//a[text()="1996"]')
+2025-10-31 01:07:06,908 - INFO - 年份 1996 找到 12 个可能的issue链接
+2025-10-31 01:07:06,909 - INFO - 数据已保存到 json_cache/years/year_1996.json
+2025-10-31 01:07:06,909 - INFO - 处理年份: 1995
+2025-10-31 01:07:08,870 - INFO - 点击元素: ('xpath', '//div[contains(@class, "issue-details-past-tabs") and contains(@class, "year")]//a[text()="1995"]')
+2025-10-31 01:07:15,095 - INFO - 年份 1995 找到 12 个可能的issue链接
+2025-10-31 01:07:15,096 - INFO - 数据已保存到 json_cache/years/year_1995.json
+2025-10-31 01:07:15,096 - INFO - 处理年份: 1994
+2025-10-31 01:07:16,755 - INFO - 点击元素: ('xpath', '//div[contains(@class, "issue-details-past-tabs") and contains(@class, "year")]//a[text()="1994"]')
+2025-10-31 01:07:20,388 - INFO - 年份 1994 找到 12 个可能的issue链接
+2025-10-31 01:07:20,389 - INFO - 数据已保存到 json_cache/years/year_1994.json
+2025-10-31 01:07:20,389 - INFO - 处理年份: 1993
+2025-10-31 01:07:22,113 - INFO - 点击元素: ('xpath', '//div[contains(@class, "issue-details-past-tabs") and contains(@class, "year")]//a[text()="1993"]')
+2025-10-31 01:07:26,784 - INFO - 年份 1993 找到 12 个可能的issue链接
+2025-10-31 01:07:26,785 - INFO - 数据已保存到 json_cache/years/year_1993.json
+2025-10-31 01:07:26,785 - INFO - 处理年份: 1992
+2025-10-31 01:07:28,139 - INFO - 点击元素: ('xpath', '//div[contains(@class, "issue-details-past-tabs") and contains(@class, "year")]//a[text()="1992"]')
+2025-10-31 01:07:33,373 - INFO - 年份 1992 找到 12 个可能的issue链接
+2025-10-31 01:07:33,374 - INFO - 数据已保存到 json_cache/years/year_1992.json
+2025-10-31 01:07:33,375 - INFO - 处理年份: 1991
+2025-10-31 01:07:35,285 - INFO - 点击元素: ('xpath', '//div[contains(@class, "issue-details-past-tabs") and contains(@class, "year")]//a[text()="1991"]')
+2025-10-31 01:07:40,734 - INFO - 年份 1991 找到 12 个可能的issue链接
+2025-10-31 01:07:40,735 - INFO - 数据已保存到 json_cache/years/year_1991.json
+2025-10-31 01:07:40,735 - INFO - 处理年份: 1990
+2025-10-31 01:07:41,999 - INFO - 点击元素: ('xpath', '//div[contains(@class, "issue-details-past-tabs") and contains(@class, "year")]//a[text()="1990"]')
+2025-10-31 01:07:47,339 - INFO - 年份 1990 找到 12 个可能的issue链接
+2025-10-31 01:07:47,340 - INFO - 数据已保存到 json_cache/years/year_1990.json
+2025-10-31 01:07:47,340 - INFO - 
+===== 开始处理年代: 1980s =====
+2025-10-31 01:07:48,775 - INFO - 点击元素: ('xpath', '//div[contains(@class, "issue-details-past-tabs") and not(contains(@class, "year"))]//a[text()="1980s"]')
+2025-10-31 01:07:50,522 - INFO - 年代 1980s 包含年份: ['1989', '1988', '1987', '1986', '1985', '1984', '1983', '1982', '1981', '1980']
+2025-10-31 01:07:50,523 - INFO - 数据已保存到 json_cache/decades/decade_1980s.json
+2025-10-31 01:07:50,524 - INFO - 处理年份: 1989
+2025-10-31 01:07:51,678 - INFO - 点击元素: ('xpath', '//div[contains(@class, "issue-details-past-tabs") and contains(@class, "year")]//a[text()="1989"]')
+2025-10-31 01:07:56,257 - INFO - 年份 1989 找到 12 个可能的issue链接
+2025-10-31 01:07:56,258 - INFO - 数据已保存到 json_cache/years/year_1989.json
+2025-10-31 01:07:56,258 - INFO - 处理年份: 1988
+2025-10-31 01:07:57,654 - INFO - 点击元素: ('xpath', '//div[contains(@class, "issue-details-past-tabs") and contains(@class, "year")]//a[text()="1988"]')
+2025-10-31 01:08:02,763 - INFO - 年份 1988 找到 6 个可能的issue链接
+2025-10-31 01:08:02,764 - INFO - 数据已保存到 json_cache/years/year_1988.json
+2025-10-31 01:08:02,764 - INFO - 处理年份: 1987
+2025-10-31 01:08:04,147 - INFO - 点击元素: ('xpath', '//div[contains(@class, "issue-details-past-tabs") and contains(@class, "year")]//a[text()="1987"]')
+2025-10-31 01:08:07,598 - INFO - 年份 1987 找到 6 个可能的issue链接
+2025-10-31 01:08:07,599 - INFO - 数据已保存到 json_cache/years/year_1987.json
+2025-10-31 01:08:07,599 - INFO - 处理年份: 1986
+2025-10-31 01:08:08,803 - INFO - 点击元素: ('xpath', '//div[contains(@class, "issue-details-past-tabs") and contains(@class, "year")]//a[text()="1986"]')
+2025-10-31 01:08:15,556 - INFO - 年份 1986 找到 6 个可能的issue链接
+2025-10-31 01:08:15,557 - INFO - 数据已保存到 json_cache/years/year_1986.json
+2025-10-31 01:08:15,557 - INFO - 处理年份: 1985
+2025-10-31 01:08:17,241 - INFO - 点击元素: ('xpath', '//div[contains(@class, "issue-details-past-tabs") and contains(@class, "year")]//a[text()="1985"]')
+2025-10-31 01:08:21,019 - INFO - 年份 1985 找到 6 个可能的issue链接
+2025-10-31 01:08:21,020 - INFO - 数据已保存到 json_cache/years/year_1985.json
+2025-10-31 01:08:21,021 - INFO - 处理年份: 1984
+2025-10-31 01:08:22,615 - INFO - 点击元素: ('xpath', '//div[contains(@class, "issue-details-past-tabs") and contains(@class, "year")]//a[text()="1984"]')
+2025-10-31 01:08:28,674 - INFO - 年份 1984 找到 6 个可能的issue链接
+2025-10-31 01:08:28,675 - INFO - 数据已保存到 json_cache/years/year_1984.json
+2025-10-31 01:08:28,675 - INFO - 处理年份: 1983
+2025-10-31 01:08:30,489 - INFO - 点击元素: ('xpath', '//div[contains(@class, "issue-details-past-tabs") and contains(@class, "year")]//a[text()="1983"]')
+2025-10-31 01:08:35,704 - INFO - 年份 1983 找到 6 个可能的issue链接
+2025-10-31 01:08:35,705 - INFO - 数据已保存到 json_cache/years/year_1983.json
+2025-10-31 01:08:35,705 - INFO - 处理年份: 1982
+2025-10-31 01:08:37,699 - INFO - 点击元素: ('xpath', '//div[contains(@class, "issue-details-past-tabs") and contains(@class, "year")]//a[text()="1982"]')
+2025-10-31 01:08:43,800 - INFO - 年份 1982 找到 6 个可能的issue链接
+2025-10-31 01:08:43,801 - INFO - 数据已保存到 json_cache/years/year_1982.json
+2025-10-31 01:08:43,802 - INFO - 处理年份: 1981
+2025-10-31 01:08:45,659 - INFO - 点击元素: ('xpath', '//div[contains(@class, "issue-details-past-tabs") and contains(@class, "year")]//a[text()="1981"]')
+2025-10-31 01:08:50,383 - INFO - 年份 1981 找到 6 个可能的issue链接
+2025-10-31 01:08:50,384 - INFO - 数据已保存到 json_cache/years/year_1981.json
+2025-10-31 01:08:50,384 - INFO - 处理年份: 1980
+2025-10-31 01:08:51,994 - INFO - 点击元素: ('xpath', '//div[contains(@class, "issue-details-past-tabs") and contains(@class, "year")]//a[text()="1980"]')
+2025-10-31 01:08:56,753 - INFO - 年份 1980 找到 6 个可能的issue链接
+2025-10-31 01:08:56,754 - INFO - 数据已保存到 json_cache/years/year_1980.json
+2025-10-31 01:08:56,755 - INFO - 
+===== 开始处理年代: 1970s =====
+2025-10-31 01:08:58,879 - INFO - 点击元素: ('xpath', '//div[contains(@class, "issue-details-past-tabs") and not(contains(@class, "year"))]//a[text()="1970s"]')
+2025-10-31 01:09:01,302 - INFO - 年代 1970s 包含年份: ['1979']
+2025-10-31 01:09:01,304 - INFO - 数据已保存到 json_cache/decades/decade_1970s.json
+2025-10-31 01:09:01,305 - INFO - 处理年份: 1979
+2025-10-31 01:09:02,934 - INFO - 点击元素: ('xpath', '//div[contains(@class, "issue-details-past-tabs") and contains(@class, "year")]//a[text()="1979"]')
+2025-10-31 01:09:09,478 - INFO - 年份 1979 找到 4 个可能的issue链接
+2025-10-31 01:09:09,479 - INFO - 数据已保存到 json_cache/years/year_1979.json
+2025-10-31 01:09:09,479 - INFO - 
+===== 提取完成，共获取 506 个期的isnumber =====
+2025-10-31 01:09:09,480 - INFO - 数据已保存到 json_cache/all_isnumbers.json
+2025-10-31 01:09:09,480 - INFO - 获取期 isnumber=10008914 的论文ID...
+2025-10-31 01:09:19,474 - INFO - 获取页面 https://ieeexplore.ieee.org/xpl/tocresult.jsp?isnumber=10008914&punumber=34
+2025-10-31 01:09:24,652 - INFO - 期 10008914 总论文数量应为: 86
+2025-10-31 01:09:24,652 - INFO - 处理第 1 页的论文ID
+2025-10-31 01:09:24,666 - INFO - 使用选择器 xpl-issue-results-items h2 a[href*="/document/"] 找到 50 个论文链接
+2025-10-31 01:09:45,082 - INFO - 第 1 页提取到 25 个新论文ID
+2025-10-31 01:09:45,082 - INFO - 尝试直接点击第 2 页按钮
+2025-10-31 01:09:46,845 - INFO - 点击元素: ('css selector', 'button[aria-label="Page 2 of search results"]')
+2025-10-31 01:09:53,469 - INFO - 处理第 2 页的论文ID
+2025-10-31 01:09:53,481 - INFO - 使用选择器 xpl-issue-results-items h2 a[href*="/document/"] 找到 50 个论文链接
+2025-10-31 01:10:13,883 - INFO - 第 2 页提取到 25 个新论文ID
+2025-10-31 01:10:13,884 - INFO - 尝试直接点击第 3 页按钮
+2025-10-31 01:10:15,639 - INFO - 点击元素: ('css selector', 'button[aria-label="Page 3 of search results"]')
+2025-10-31 01:10:22,974 - INFO - 处理第 3 页的论文ID
+2025-10-31 01:10:22,987 - INFO - 使用选择器 xpl-issue-results-items h2 a[href*="/document/"] 找到 50 个论文链接
+2025-10-31 01:10:43,526 - INFO - 第 3 页提取到 25 个新论文ID
+2025-10-31 01:10:43,527 - INFO - 尝试直接点击第 4 页按钮
+2025-10-31 01:10:44,839 - INFO - 点击元素: ('css selector', 'button[aria-label="Page 4 of search results"]')
+2025-10-31 01:10:51,033 - INFO - 处理第 4 页的论文ID
+2025-10-31 01:10:51,046 - INFO - 使用选择器 xpl-issue-results-items h2 a[href*="/document/"] 找到 22 个论文链接
+2025-10-31 01:11:11,301 - INFO - 第 4 页提取到 11 个新论文ID
+2025-10-31 01:11:11,302 - INFO - 已获取所有 86 篇论文ID
+2025-10-31 01:11:11,305 - INFO - 数据已保存到 json_cache/issues/issue_10008914.json
+2025-10-31 01:11:11,305 - INFO - 期 isnumber=10008914 共提取 86 篇论文ID
+2025-10-31 01:11:11,306 - INFO - 获取论文详情: ID=9745790
+2025-10-31 01:11:26,931 - INFO - 获取页面 https://ieeexplore.ieee.org/document/9745790/
+2025-10-31 01:11:31,856 - INFO - 数据已保存到 json_cache/papers/paper_9745790.json
+2025-10-31 01:11:31,857 - INFO - 获取论文详情: ID=9729603
+2025-10-31 01:11:42,897 - INFO - 获取页面 https://ieeexplore.ieee.org/document/9729603/
+2025-10-31 01:11:46,814 - INFO - 数据已保存到 json_cache/papers/paper_9729603.json
+2025-10-31 01:11:46,815 - INFO - 获取论文详情: ID=9736597
+2025-10-31 01:11:56,512 - INFO - 获取页面 https://ieeexplore.ieee.org/document/9736597/
+2025-10-31 01:12:00,711 - INFO - 数据已保存到 json_cache/papers/paper_9736597.json
+2025-10-31 01:12:00,711 - INFO - 获取论文详情: ID=9749881
+2025-10-31 01:12:11,640 - INFO - 获取页面 https://ieeexplore.ieee.org/document/9749881/
+2025-10-31 01:12:15,142 - INFO - 数据已保存到 json_cache/papers/paper_9749881.json
+2025-10-31 01:12:15,142 - INFO - 获取论文详情: ID=9744488
+2025-10-31 01:12:24,954 - INFO - 获取页面 https://ieeexplore.ieee.org/document/9744488/
+2025-10-31 01:12:29,939 - INFO - 数据已保存到 json_cache/papers/paper_9744488.json
+2025-10-31 01:12:29,939 - INFO - 获取论文详情: ID=9760117
+2025-10-31 01:12:39,262 - INFO - 获取页面 https://ieeexplore.ieee.org/document/9760117/
+2025-10-31 01:12:42,784 - INFO - 数据已保存到 json_cache/papers/paper_9760117.json
+2025-10-31 01:12:42,785 - INFO - 获取论文详情: ID=9748011
+2025-10-31 01:12:49,040 - INFO - 获取页面 https://ieeexplore.ieee.org/document/9748011/
+2025-10-31 01:12:53,448 - INFO - 数据已保存到 json_cache/papers/paper_9748011.json
+2025-10-31 01:12:53,449 - INFO - 获取论文详情: ID=9729658
+2025-10-31 01:13:00,360 - INFO - 获取页面 https://ieeexplore.ieee.org/document/9729658/
+2025-10-31 01:13:03,472 - INFO - 数据已保存到 json_cache/papers/paper_9729658.json
+2025-10-31 01:13:03,472 - INFO - 获取论文详情: ID=9729609
+2025-10-31 01:13:11,309 - INFO - 获取页面 https://ieeexplore.ieee.org/document/9729609/
+2025-10-31 01:13:14,491 - INFO - 数据已保存到 json_cache/papers/paper_9729609.json
+2025-10-31 01:13:14,492 - INFO - 获取论文详情: ID=9747984
+2025-10-31 01:13:19,876 - INFO - 获取页面 https://ieeexplore.ieee.org/document/9747984/
+2025-10-31 01:13:24,710 - INFO - 数据已保存到 json_cache/papers/paper_9747984.json
+2025-10-31 01:13:24,710 - INFO - 获取论文详情: ID=9756878
+2025-10-31 01:13:30,918 - INFO - 获取页面 https://ieeexplore.ieee.org/document/9756878/
+2025-10-31 01:13:34,442 - INFO - 数据已保存到 json_cache/papers/paper_9756878.json
+2025-10-31 01:13:34,442 - INFO - 获取论文详情: ID=9741362
+2025-10-31 01:13:42,996 - INFO - 获取页面 https://ieeexplore.ieee.org/document/9741362/
+2025-10-31 01:13:46,818 - INFO - 数据已保存到 json_cache/papers/paper_9741362.json
+2025-10-31 01:13:46,819 - INFO - 获取论文详情: ID=9737217
+2025-10-31 01:13:53,557 - INFO - 获取页面 https://ieeexplore.ieee.org/document/9737217/
+2025-10-31 01:13:56,289 - INFO - 数据已保存到 json_cache/papers/paper_9737217.json
+2025-10-31 01:13:56,290 - INFO - 获取论文详情: ID=9749838
+2025-10-31 01:14:02,839 - INFO - 获取页面 https://ieeexplore.ieee.org/document/9749838/
+2025-10-31 01:14:05,519 - INFO - 数据已保存到 json_cache/papers/paper_9749838.json
+2025-10-31 01:14:05,519 - INFO - 获取论文详情: ID=9743317
+2025-10-31 01:14:13,645 - INFO - 获取页面 https://ieeexplore.ieee.org/document/9743317/
+2025-10-31 01:14:17,838 - INFO - 数据已保存到 json_cache/papers/paper_9743317.json
+2025-10-31 01:14:17,838 - INFO - 获取论文详情: ID=9760157
+2025-10-31 01:14:23,738 - INFO - 获取页面 https://ieeexplore.ieee.org/document/9760157/
+2025-10-31 01:14:28,293 - INFO - 数据已保存到 json_cache/papers/paper_9760157.json
+2025-10-31 01:14:28,293 - INFO - 获取论文详情: ID=9737407
+2025-10-31 01:14:34,678 - INFO - 获取页面 https://ieeexplore.ieee.org/document/9737407/
+2025-10-31 01:14:38,609 - INFO - 数据已保存到 json_cache/papers/paper_9737407.json
+2025-10-31 01:14:38,609 - INFO - 获取论文详情: ID=9763421
+2025-10-31 01:14:44,877 - INFO - 获取页面 https://ieeexplore.ieee.org/document/9763421/
+2025-10-31 01:14:48,457 - INFO - 数据已保存到 json_cache/papers/paper_9763421.json
+2025-10-31 01:14:48,457 - INFO - 获取论文详情: ID=9760096
+2025-10-31 01:14:53,938 - INFO - 获取页面 https://ieeexplore.ieee.org/document/9760096/
+2025-10-31 01:14:57,135 - INFO - 数据已保存到 json_cache/papers/paper_9760096.json
+2025-10-31 01:14:57,136 - INFO - 获取论文详情: ID=9763389
+2025-10-31 01:15:02,198 - INFO - 获取页面 https://ieeexplore.ieee.org/document/9763389/
+2025-10-31 01:15:05,296 - INFO - 数据已保存到 json_cache/papers/paper_9763389.json
+2025-10-31 01:15:05,297 - INFO - 获取论文详情: ID=9741534
+2025-10-31 01:15:09,945 - INFO - 获取页面 https://ieeexplore.ieee.org/document/9741534/
+2025-10-31 01:15:12,702 - INFO - 数据已保存到 json_cache/papers/paper_9741534.json
+2025-10-31 01:15:12,703 - INFO - 获取论文详情: ID=9766436
+2025-10-31 01:15:18,875 - INFO - 获取页面 https://ieeexplore.ieee.org/document/9766436/
+2025-10-31 01:15:20,965 - INFO - 数据已保存到 json_cache/papers/paper_9766436.json
+2025-10-31 01:15:20,965 - INFO - 获取论文详情: ID=9761748
+2025-10-31 01:15:26,065 - INFO - 获取页面 https://ieeexplore.ieee.org/document/9761748/
+2025-10-31 01:15:28,179 - INFO - 数据已保存到 json_cache/papers/paper_9761748.json
+2025-10-31 01:15:28,180 - INFO - 获取论文详情: ID=9756256
+2025-10-31 01:15:33,371 - INFO - 获取页面 https://ieeexplore.ieee.org/document/9756256/
+2025-10-31 01:15:37,384 - INFO - 数据已保存到 json_cache/papers/paper_9756256.json
+2025-10-31 01:15:37,384 - INFO - 获取论文详情: ID=9751395
+2025-10-31 01:15:44,726 - INFO - 获取页面 https://ieeexplore.ieee.org/document/9751395/
+2025-10-31 01:15:47,600 - INFO - 数据已保存到 json_cache/papers/paper_9751395.json
+2025-10-31 01:15:47,601 - INFO - 获取论文详情: ID=9762560
+2025-10-31 01:15:52,529 - INFO - 获取页面 https://ieeexplore.ieee.org/document/9762560/
+2025-10-31 01:15:56,724 - INFO - 数据已保存到 json_cache/papers/paper_9762560.json
+2025-10-31 01:15:56,724 - INFO - 获取论文详情: ID=9762064
+2025-10-31 01:16:01,475 - INFO - 获取页面 https://ieeexplore.ieee.org/document/9762064/
+2025-10-31 01:16:04,431 - INFO - 数据已保存到 json_cache/papers/paper_9762064.json
+2025-10-31 01:16:04,431 - INFO - 获取论文详情: ID=9736609
+2025-10-31 01:16:09,755 - INFO - 获取页面 https://ieeexplore.ieee.org/document/9736609/
+2025-10-31 01:16:12,633 - INFO - 数据已保存到 json_cache/papers/paper_9736609.json
+2025-10-31 01:16:12,633 - INFO - 获取论文详情: ID=9749007
+2025-10-31 01:16:18,231 - INFO - 获取页面 https://ieeexplore.ieee.org/document/9749007/
+2025-10-31 01:16:22,396 - INFO - 数据已保存到 json_cache/papers/paper_9749007.json
+2025-10-31 01:16:22,396 - INFO - 获取论文详情: ID=9765714
+2025-10-31 01:16:27,047 - INFO - 获取页面 https://ieeexplore.ieee.org/document/9765714/
+2025-10-31 01:16:30,771 - INFO - 数据已保存到 json_cache/papers/paper_9765714.json
+2025-10-31 01:16:30,772 - INFO - 获取论文详情: ID=9737403
+2025-10-31 01:16:35,410 - INFO - 获取页面 https://ieeexplore.ieee.org/document/9737403/
+2025-10-31 01:16:39,147 - INFO - 数据已保存到 json_cache/papers/paper_9737403.json
+2025-10-31 01:16:39,148 - INFO - 获取论文详情: ID=9756344
+2025-10-31 01:16:44,728 - INFO - 获取页面 https://ieeexplore.ieee.org/document/9756344/
+2025-10-31 01:16:49,646 - INFO - 数据已保存到 json_cache/papers/paper_9756344.json
+2025-10-31 01:16:49,646 - INFO - 获取论文详情: ID=9740522
+2025-10-31 01:16:55,770 - INFO - 获取页面 https://ieeexplore.ieee.org/document/9740522/
+2025-10-31 01:16:59,088 - INFO - 数据已保存到 json_cache/papers/paper_9740522.json
+2025-10-31 01:16:59,089 - INFO - 获取论文详情: ID=9744510
+2025-10-31 01:17:05,339 - INFO - 获取页面 https://ieeexplore.ieee.org/document/9744510/
+2025-10-31 01:17:10,188 - INFO - 数据已保存到 json_cache/papers/paper_9744510.json
+2025-10-31 01:17:10,188 - INFO - 获取论文详情: ID=9729527
+2025-10-31 01:20:06,997 - INFO - ====== WebDriver manager ======
+2025-10-31 01:20:16,352 - INFO - ====== WebDriver manager ======
+2025-10-31 01:20:19,774 - INFO - Get LATEST chromedriver version for google-chrome
+2025-10-31 01:20:20,073 - INFO - Get LATEST chromedriver version for google-chrome
+2025-10-31 01:20:20,557 - INFO - Driver [C:\Users\Administrator\.wdm\drivers\chromedriver\win64\142.0.7444.59\chromedriver-win32/chromedriver.exe] found in cache
+2025-10-31 01:20:21,991 - INFO - 开始爬取IEEE期刊论文数据...
+2025-10-31 01:20:21,992 - INFO - 开始获取所有年代、所有年份的isnumber...
+2025-10-31 01:20:21,994 - INFO - 从缓存加载数据: json_cache/all_isnumbers.json
+2025-10-31 01:20:22,026 - INFO - 获取期 isnumber=10008914 的论文ID...
+2025-10-31 01:20:22,028 - INFO - 从缓存加载数据: json_cache/issues/issue_10008914.json
+2025-10-31 01:20:22,028 - INFO - 获取论文详情: ID=9745790
+2025-10-31 01:20:31,116 - INFO - 获取页面 https://ieeexplore.ieee.org/document/9745790/
+2025-10-31 01:20:34,467 - INFO - 提取到标题: 4D Atlas: Statistical Analysis of the Spatiotemporal Variability in Longitudinal 3D Shape Data
+2025-10-31 01:20:34,481 - INFO - 数据已保存到 json_cache/papers/paper_9745790.json
+2025-10-31 01:20:34,482 - INFO - 获取论文详情: ID=9729603
+2025-10-31 01:20:39,083 - INFO - 获取页面 https://ieeexplore.ieee.org/document/9729603/
+2025-10-31 01:20:43,859 - INFO - 提取到标题: A Review of the Gumbel-max Trick and its Extensions for Discrete Stochasticity in Machine Learning
+2025-10-31 01:20:43,871 - INFO - 数据已保存到 json_cache/papers/paper_9729603.json
+2025-10-31 01:20:43,872 - INFO - 获取论文详情: ID=9736597
+2025-10-31 01:20:48,752 - INFO - 获取页面 https://ieeexplore.ieee.org/document/9736597/
+2025-10-31 01:20:52,387 - INFO - 提取到标题: Adaptive Perspective Distillation for Semantic Segmentation
+2025-10-31 01:20:52,400 - INFO - 数据已保存到 json_cache/papers/paper_9736597.json
+2025-10-31 01:20:52,400 - INFO - 获取论文详情: ID=9749881
+2025-10-31 01:20:57,249 - INFO - 获取页面 https://ieeexplore.ieee.org/document/9749881/
+2025-10-31 01:21:02,186 - INFO - 提取到标题: Adversarial Examples Generation for Deep Product Quantization Networks on Image Retrieval
+2025-10-31 01:21:02,199 - INFO - 数据已保存到 json_cache/papers/paper_9749881.json
+2025-10-31 01:21:02,199 - INFO - 获取论文详情: ID=9744488
+2025-10-31 01:21:06,070 - INFO - 获取页面 https://ieeexplore.ieee.org/document/9744488/
+2025-10-31 01:21:09,833 - INFO - 提取到标题: Bayesian Image Super-Resolution With Deep Modeling of Image Statistics
+2025-10-31 01:21:09,847 - INFO - 数据已保存到 json_cache/papers/paper_9744488.json
+2025-10-31 01:21:09,848 - INFO - 获取论文详情: ID=9760117
+2025-10-31 01:21:13,982 - INFO - 获取页面 https://ieeexplore.ieee.org/document/9760117/
+2025-10-31 01:21:16,105 - INFO - 提取到标题: Benchmarking Single-Image Reflection Removal Algorithms
+2025-10-31 01:21:16,118 - INFO - 数据已保存到 json_cache/papers/paper_9760117.json
+2025-10-31 01:21:16,118 - INFO - 获取论文详情: ID=9748011
+2025-10-31 01:21:21,292 - INFO - 获取页面 https://ieeexplore.ieee.org/document/9748011/
+2025-10-31 01:21:24,975 - INFO - 提取到标题: Beyond 3DMM: Learning to Capture High-Fidelity 3D Face Shape
+2025-10-31 01:21:24,988 - INFO - 数据已保存到 json_cache/papers/paper_9748011.json
+2025-10-31 01:21:24,988 - INFO - 获取论文详情: ID=9729658
+2025-10-31 01:21:29,240 - INFO - 获取页面 https://ieeexplore.ieee.org/document/9729658/
+2025-10-31 01:21:32,294 - INFO - 提取到标题: Bilinear Scoring Function Search for Knowledge Graph Learning
+2025-10-31 01:21:32,309 - INFO - 数据已保存到 json_cache/papers/paper_9729658.json
+2025-10-31 01:21:32,310 - INFO - 获取论文详情: ID=9729609
+2025-10-31 01:21:37,302 - INFO - 获取页面 https://ieeexplore.ieee.org/document/9729609/
+2025-10-31 01:21:40,634 - INFO - 提取到标题: Constructing Stronger and Faster Baselines for Skeleton-Based Action Recognition
+2025-10-31 01:21:40,647 - INFO - 数据已保存到 json_cache/papers/paper_9729609.json
+2025-10-31 01:21:40,647 - INFO - 获取论文详情: ID=9747984
+2025-10-31 01:21:46,776 - INFO - 获取页面 https://ieeexplore.ieee.org/document/9747984/
+2025-10-31 01:21:50,970 - INFO - 提取到标题: Contextual Transformer Networks for Visual Recognition
+2025-10-31 01:21:50,989 - INFO - 数据已保存到 json_cache/papers/paper_9747984.json
+2025-10-31 01:21:50,989 - INFO - 获取论文详情: ID=9756878
+2025-10-31 01:21:56,634 - INFO - 获取页面 https://ieeexplore.ieee.org/document/9756878/
+2025-10-31 01:22:01,191 - INFO - 提取到标题: Contingency Space: A Semimetric Space for Classification Evaluation
+2025-10-31 01:22:01,216 - INFO - 数据已保存到 json_cache/papers/paper_9756878.json
+2025-10-31 01:22:01,216 - INFO - 获取论文详情: ID=9741362
+2025-10-31 01:22:05,632 - INFO - 获取页面 https://ieeexplore.ieee.org/document/9741362/
+2025-10-31 01:22:08,540 - INFO - 提取到标题: Controllable Image Synthesis With Attribute-Decomposed GAN
+2025-10-31 01:22:08,553 - INFO - 数据已保存到 json_cache/papers/paper_9741362.json
+2025-10-31 01:22:08,553 - INFO - 获取论文详情: ID=9737217
+2025-10-31 01:22:13,972 - INFO - 获取页面 https://ieeexplore.ieee.org/document/9737217/
+2025-10-31 01:22:18,163 - INFO - 提取到标题: Cross-Modal Learning for Domain Adaptation in 3D Semantic Segmentation
+2025-10-31 01:22:18,176 - INFO - 数据已保存到 json_cache/papers/paper_9737217.json
+2025-10-31 01:22:18,176 - INFO - 获取论文详情: ID=9749838
+2025-10-31 01:22:22,642 - INFO - 获取页面 https://ieeexplore.ieee.org/document/9749838/
+2025-10-31 01:22:27,577 - INFO - 提取到标题: Curvature-Adaptive Meta-Learning for Fast Adaptation to Manifold Data
+2025-10-31 01:22:27,590 - INFO - 数据已保存到 json_cache/papers/paper_9749838.json
+2025-10-31 01:22:27,590 - INFO - 获取论文详情: ID=9743317
+2025-10-31 01:22:33,099 - INFO - 获取页面 https://ieeexplore.ieee.org/document/9743317/
+2025-10-31 01:22:35,489 - INFO - 提取到标题: Dataset Security for Machine Learning: Data Poisoning, Backdoor Attacks, and Defenses
+2025-10-31 01:22:35,506 - INFO - 数据已保存到 json_cache/papers/paper_9743317.json
+2025-10-31 01:22:35,506 - INFO - 获取论文详情: ID=9760157
+2025-10-31 01:22:39,967 - INFO - 获取页面 https://ieeexplore.ieee.org/document/9760157/
+2025-10-31 01:22:42,937 - INFO - 提取到标题: DeepCloth: Neural Garment Representation for Shape and Style Editing
+2025-10-31 01:22:42,949 - INFO - 数据已保存到 json_cache/papers/paper_9760157.json
+2025-10-31 01:22:42,949 - INFO - 获取论文详情: ID=9737407
+2025-10-31 01:22:48,831 - INFO - 获取页面 https://ieeexplore.ieee.org/document/9737407/
+2025-10-31 01:22:52,314 - INFO - 提取到标题: Diagnosing and Preventing Instabilities in Recurrent Video Processing
+2025-10-31 01:22:52,327 - INFO - 数据已保存到 json_cache/papers/paper_9737407.json
+2025-10-31 01:22:52,327 - INFO - 获取论文详情: ID=9763421
+2025-10-31 01:22:57,391 - INFO - 获取页面 https://ieeexplore.ieee.org/document/9763421/
+2025-10-31 01:23:02,135 - INFO - 提取到标题: Differentiable Graph Module (DGM) for Graph Convolutional Networks
+2025-10-31 01:23:02,150 - INFO - 数据已保存到 json_cache/papers/paper_9763421.json
+2025-10-31 01:23:02,150 - INFO - 获取论文详情: ID=9760096
+2025-10-31 01:23:06,715 - INFO - 获取页面 https://ieeexplore.ieee.org/document/9760096/
+2025-10-31 01:23:09,671 - INFO - 提取到标题: Discriminant Feature Extraction by Generalized Difference Subspace
+2025-10-31 01:23:09,685 - INFO - 数据已保存到 json_cache/papers/paper_9760096.json
+2025-10-31 01:23:09,685 - INFO - 获取论文详情: ID=9763389
+2025-10-31 01:23:14,022 - INFO - 获取页面 https://ieeexplore.ieee.org/document/9763389/
+2025-10-31 01:23:17,665 - INFO - 提取到标题: Dual Networks Based 3D Multi-Person Pose Estimation From Monocular Video
+2025-10-31 01:23:17,677 - INFO - 数据已保存到 json_cache/papers/paper_9763389.json
+2025-10-31 01:23:17,678 - INFO - 获取论文详情: ID=9741534
+2025-10-31 01:23:21,934 - INFO - 获取页面 https://ieeexplore.ieee.org/document/9741534/
+2025-10-31 01:23:26,089 - INFO - 提取到标题: Duality-Induced Regularizer for Semantic Matching Knowledge Graph Embeddings
+2025-10-31 01:23:26,108 - INFO - 数据已保存到 json_cache/papers/paper_9741534.json
+2025-10-31 01:23:26,108 - INFO - 获取论文详情: ID=9766436
+2025-10-31 01:23:31,688 - INFO - 获取页面 https://ieeexplore.ieee.org/document/9766436/
+2025-10-31 01:23:33,775 - INFO - 提取到标题: Dynamic Differential Image Circle Diameter Measurement Precision Assessment: Application to Burning Droplets
+2025-10-31 01:23:33,789 - INFO - 数据已保存到 json_cache/papers/paper_9766436.json
+2025-10-31 01:23:33,790 - INFO - 获取论文详情: ID=9761748
+2025-10-31 01:23:40,184 - INFO - 获取页面 https://ieeexplore.ieee.org/document/9761748/
+2025-10-31 01:23:43,018 - INFO - 提取到标题: Emotional Attention: From Eye Tracking to Computational Modeling
+2025-10-31 01:23:43,031 - INFO - 数据已保存到 json_cache/papers/paper_9761748.json
+2025-10-31 01:23:43,031 - INFO - 获取论文详情: ID=9756256
+2025-10-31 01:23:47,439 - INFO - 获取页面 https://ieeexplore.ieee.org/document/9756256/
+2025-10-31 01:23:52,267 - INFO - 提取到标题: Enhancing Photorealism Enhancement
+2025-10-31 01:23:52,306 - INFO - 数据已保存到 json_cache/papers/paper_9756256.json
+2025-10-31 01:23:52,306 - INFO - 获取论文详情: ID=9751395
+2025-10-31 01:23:57,940 - INFO - 获取页面 https://ieeexplore.ieee.org/document/9751395/
+2025-10-31 01:24:00,716 - INFO - 提取到标题: Equivariant Wavelets: Fast Rotation and Translation Invariant Wavelet Scattering Transforms
+2025-10-31 01:24:00,729 - INFO - 数据已保存到 json_cache/papers/paper_9751395.json
+2025-10-31 01:24:00,730 - INFO - 获取论文详情: ID=9762560
+2025-10-31 01:24:06,858 - INFO - 获取页面 https://ieeexplore.ieee.org/document/9762560/
+2025-10-31 01:24:11,825 - INFO - 提取到标题: Evaluation for Weakly Supervised Object Localization: Protocol, Metrics, and Datasets
+2025-10-31 01:24:11,838 - INFO - 数据已保存到 json_cache/papers/paper_9762560.json
+2025-10-31 01:24:11,839 - INFO - 获取论文详情: ID=9762064
+2025-10-31 01:24:16,625 - INFO - 获取页面 https://ieeexplore.ieee.org/document/9762064/
+2025-10-31 01:24:21,146 - INFO - 提取到标题: Exploring Structural Sparsity of Deep Networks Via Inverse Scale Spaces
+2025-10-31 01:24:21,160 - INFO - 数据已保存到 json_cache/papers/paper_9762064.json
+2025-10-31 01:24:21,160 - INFO - 获取论文详情: ID=9736609
+2025-10-31 01:24:26,997 - INFO - 获取页面 https://ieeexplore.ieee.org/document/9736609/
+2025-10-31 01:24:30,369 - INFO - 提取到标题: From Big to Small: Adaptive Learning to Partial-Set Domains
+2025-10-31 01:24:30,384 - INFO - 数据已保存到 json_cache/papers/paper_9736609.json
+2025-10-31 01:24:30,385 - INFO - 获取论文详情: ID=9749007
+2025-10-31 01:24:35,060 - INFO - 获取页面 https://ieeexplore.ieee.org/document/9749007/
+2025-10-31 01:24:38,059 - INFO - 提取到标题: From Human Pose Similarity Metric to 3D Human Pose Estimator: Temporal Propagating LSTM Networks
+2025-10-31 01:24:38,072 - INFO - 数据已保存到 json_cache/papers/paper_9749007.json
+2025-10-31 01:24:38,072 - INFO - 获取论文详情: ID=9765714
+2025-10-31 01:24:43,599 - INFO - 获取页面 https://ieeexplore.ieee.org/document/9765714/
+2025-10-31 01:24:45,918 - INFO - 提取到标题: Generalization Performance of Pure Accuracy and its Application in Selective Ensemble Learning
+2025-10-31 01:24:45,931 - INFO - 数据已保存到 json_cache/papers/paper_9765714.json
+2025-10-31 01:24:45,931 - INFO - 获取论文详情: ID=9737403
+2025-10-31 01:24:51,650 - INFO - 获取页面 https://ieeexplore.ieee.org/document/9737403/
+2025-10-31 01:24:54,938 - INFO - 提取到标题: Generalized Knowledge Distillation via Relationship Matching
+2025-10-31 01:24:54,950 - INFO - 数据已保存到 json_cache/papers/paper_9737403.json
+2025-10-31 01:24:54,950 - INFO - 获取论文详情: ID=9756344
+2025-10-31 01:25:00,685 - INFO - 获取页面 https://ieeexplore.ieee.org/document/9756344/
+2025-10-31 01:25:04,997 - INFO - 提取到标题: Graph Learning on Millions of Data in Seconds: Label Propagation Acceleration on Graph Using Data Distribution
+2025-10-31 01:25:05,009 - INFO - 数据已保存到 json_cache/papers/paper_9756344.json
+2025-10-31 01:25:05,009 - INFO - 获取论文详情: ID=9740522
