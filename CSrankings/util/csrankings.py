@@ -18,7 +18,7 @@ pageCountThreshold = 6
 pageCounterNormal = re.compile("([0-9]+)-([0-9]+)")
 # Match page number in the form volume:page (as in 12:140-12:150).
 pageCounterColon = re.compile("[0-9]+:([1-9][0-9]*)-[0-9]+:([1-9][0-9]*)")
-# Special regexp for extracting pseudo-volumes (paper number) from TECS.
+# Special regexp for extracting pseudo-volumes (papers number) from TECS.
 TECSCounterColon = re.compile("([0-9]+):[1-9][0-9]*-([0-9]+):[1-9][0-9]*")
 # Extract the ISMB proceedings page numbers.
 ISMBpageCounter = re.compile("i(\\d+)-i(\\d+)")
@@ -672,9 +672,9 @@ TVCG_VR_Volume = {
     2013: (19, 4),
     2012: (18, 4),
 }
-# ICSE special handling to omit short papers.
+# ICSE special handling to omit short papers_old.
 # Contributed by Zhendong Su, UC Davis.
-# Short papers start at this page number for these proceedings of ICSE (and are thus omitted,
+# Short papers_old start at this page number for these proceedings of ICSE (and are thus omitted,
 # as the acceptance criteria differ).
 ICSE_ShortPaperStart = {
     2013: 851,
@@ -693,7 +693,7 @@ ICSE_ShortPaperStart = {
     1998: 419,
     1997: 535,
 }
-# SIGMOD special handling to avoid non-research papers.
+# SIGMOD special handling to avoid non-research papers_old.
 # This and other SIGMOD data below contributed by Davide Martinenghi,
 # Politecnico di Milano.
 SIGMOD_NonResearchPaperStart = {
@@ -722,7 +722,7 @@ SIGMOD_NonResearchPaperStart = {
     1993: 388,
 }
 # SIGMOD recently has begun intermingling research and non-research
-# track papers in their proceedings, requiring individual paper
+# track papers_old in their proceedings, requiring individual papers
 # filtering.
 SIGMOD_NonResearchPapersRange = {
     2018: [(177, 230), (583, 627), (789, 839), (1393, 1459), (1637, 1845)],
@@ -771,8 +771,8 @@ SIGMOD_NonResearchPapersRange = {
     ],
     2014: [(147, 188), (337, 384), (529, 573), (1223, 1258)],
 }
-# ASE accepts short papers and long papers. Long papers appear to be at least 10 pages long,
-# while short papers are shorter.
+# ASE accepts short papers_old and long papers_old. Long papers_old appear to be at least 10 pages long,
+# while short papers_old are shorter.
 ASE_LongPaperThreshold = 10
 # Build a dictionary mapping conferences to areas.
 # e.g., confdict['CVPR'] = 'vision'.
@@ -800,7 +800,7 @@ def countPaper(
     url: str,
     title: Title,
 ) -> bool:
-    """Returns true iff this paper will be included in the rankings."""
+    """Returns true iff this papers will be included in the rankings."""
 
     if year < startyear or year > endyear:
         return False
@@ -852,15 +852,15 @@ def countPaper(
         if year in ICSE_ShortPaperStart:
             pageno = ICSE_ShortPaperStart[year]
             if startPage >= pageno:
-                # Omit papers that start at or beyond this page,
-                # since they are "short papers" (regardless of their length).
+                # Omit papers_old that start at or beyond this page,
+                # since they are "short papers_old" (regardless of their length).
                 return False
     elif confname == "SIGMOD Conference":
         if year in SIGMOD_NonResearchPaperStart:
             pageno = SIGMOD_NonResearchPaperStart[year]
             if startPage >= pageno:
-                # Omit papers that start at or beyond this page,
-                # since they are not research-track papers.
+                # Omit papers_old that start at or beyond this page,
+                # since they are not research-track papers_old.
                 return False
         if year in SIGMOD_NonResearchPapersRange:
             pageRange = SIGMOD_NonResearchPapersRange[year]
@@ -884,7 +884,7 @@ def countPaper(
             return False
     elif confname == "ASE":
         if pageCount < ASE_LongPaperThreshold:
-            # Omit short papers (which may be demos, etc.).
+            # Omit short papers_old (which may be demos, etc.).
             return False
     elif confname == "ICS":
         if url is not None and "innovations" in url:
@@ -895,9 +895,9 @@ def countPaper(
                 if int(pages) in DAC_TooShortPapers[year]:
                     return False
     # SPECIAL CASE FOR conferences that have incorrect entries (as of 6/22/2016).
-    # Only skip papers with a very small paper count,
+    # Only skip papers_old with a very small papers count,
     # but above 1. Why?
-    # DBLP has real papers with incorrect page counts
+    # DBLP has real papers_old with incorrect page counts
     # - usually a truncated single page. -1 means no
     # pages found at all => some problem with journal
     # entries in DBLP.
@@ -930,7 +930,7 @@ def countPaper(
         exceptionConference |= confname == "DAC" and year == 2019
         exceptionConference |= confname == "SIGMOD Conference" and year in { 2023, 2024 }
         exceptionConference |= confname == "PODS" and year in { 2023, 2024 }
-        # to handle very old ISCA conferences; all papers are full papers in ISCA now
+        # to handle very old ISCA conferences; all papers_old are full papers_old in ISCA now
         exceptionConference |= confname == "ISCA" and (pageCount < 0 or pageCount >= 3)
         tooFewPages = not exceptionConference
     if tooFewPages:

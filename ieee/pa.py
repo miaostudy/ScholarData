@@ -15,6 +15,9 @@ from urllib.parse import urljoin, urlparse, parse_qs
 import logging
 from tqdm import tqdm
 
+os.environ['http_proxy'] = 'http://127.0.0.1:7890'
+os.environ['https_proxy'] = 'http://127.0.0.1:7890'
+
 # 配置日志
 logging.basicConfig(
     level=logging.INFO,
@@ -64,6 +67,7 @@ class IEEEScraper:
             options=options
         )
         self.driver.implicitly_wait(10)  # 隐式等待时间
+        self.driver.set_page_load_timeout(60)  # 页面加载超时时间
 
         # 移除webdriver特征
         self.driver.execute_script("Object.defineProperty(navigator, 'webdriver', {get: () => undefined})")
@@ -519,7 +523,7 @@ class IEEEScraper:
                 logging.error(f"使用选择器 '{selector}' 点击下一页时出错: {str(e)}")
                 continue
 
-        # 如果所有方法都失败，尝试通过页面URL直接跳转
+        # 如果所有方法都失败，尝试通过URL直接跳转
         try:
             current_url = self.driver.current_url
             if 'page=' in current_url:
@@ -539,9 +543,436 @@ class IEEEScraper:
             logging.error(f"通过URL跳转下一页失败: {str(e)}")
             return False
 
+    def _click_keywords_accordion(self):
+        """专门点击关键词折叠面板，确保内容显示"""
+        try:
+            # 定义关键词按钮的多种定位器（增加容错性）
+            button_locators = [
+                (By.ID, 'keywords'),  # 最直接的ID定位
+                (By.CSS_SELECTOR, 'button#keywords'),  # ID+标签组合
+                (By.XPATH, '//button[contains(@aria-controls, "keywords") and .//div[text()="Keywords"]]'),  # 功能定位
+                (By.CSS_SELECTOR, 'button[aria-controls="keywords"][aria-expanded]')  # 属性组合定位
+            ]
+
+            clicked = False
+            for locator in button_locators:
+                try:
+                    # 等待按钮出现
+                    keyword_button = WebDriverWait(self.driver, 20).until(
+                        EC.presence_of_element_located(locator)
+                    )
+
+                    # 滚动到按钮位置（确保可见）
+                    self.driver.execute_script("arguments[0].scrollIntoView({block: 'center', behavior: 'smooth'});",
+                                               keyword_button)
+                    time.sleep(2)  # 等待滚动完成
+
+                    # 检查当前状态，如果已经展开则不需要点击
+                    current_state = keyword_button.get_attribute('aria-expanded')
+                    if current_state == 'true':
+                        logging.info(f"关键词面板已展开（定位器: {locator}）")
+                        clicked = True
+                        break
+
+                    # 检查是否被其他元素遮挡
+                    try:
+                        # 尝试直接点击
+                        keyword_button.click()
+                        logging.info(f"成功点击关键词按钮（定位器: {locator}）")
+                        clicked = True
+                        break
+                    except ElementClickInterceptedException:
+                        # 被遮挡，使用JavaScript点击
+                        self.driver.execute_script("arguments[0].click();", keyword_button)
+                        logging.info(f"使用JavaScript点击关键词按钮（定位器: {locator}）")
+                        clicked = True
+                        break
+                except TimeoutException:
+                    logging.info(f"未找到关键词按钮（定位器: {locator}），尝试下一个")
+                    continue
+                except Exception as e:
+                    logging.warning(f"点击关键词按钮失败（定位器: {locator}）: {str(e)}")
+                    continue
+
+            if not clicked:
+                logging.error("所有定位器都无法找到/点击关键词按钮")
+                return False
+
+            # 点击后等待内容加载（关键！）
+            time.sleep(3)  # 等待折叠面板展开动画
+
+            # 验证内容是否已加载
+            try:
+                # 等待关键词容器出现
+                WebDriverWait(self.driver, 15).until(
+                    EC.presence_of_element_located((By.CSS_SELECTOR, 'div.stats-keywords-container'))
+                )
+                logging.info("关键词面板展开并加载完成")
+                return True
+            except TimeoutException:
+                logging.warning("关键词面板点击后，内容未及时加载")
+                # 再次尝试点击（有时候需要点击两次）
+                try:
+                    keyword_button = self.driver.find_element(By.ID, 'keywords')
+                    self.driver.execute_script("arguments[0].click();", keyword_button)
+                    logging.info("再次点击关键词按钮")
+                    time.sleep(3)
+                    # 再次验证
+                    WebDriverWait(self.driver, 10).until(
+                        EC.presence_of_element_located((By.CSS_SELECTOR, 'div.stats-keywords-container'))
+                    )
+                    logging.info("关键词面板第二次点击后加载完成")
+                    return True
+                except Exception as e:
+                    logging.error(f"第二次点击后仍未加载关键词内容: {str(e)}")
+                    return False
+
+        except Exception as e:
+            logging.error(f"处理关键词折叠面板时发生严重错误: {str(e)}")
+            return False
+
+    def _click_authors_accordion(self):
+        """专门点击作者折叠面板，确保内容显示"""
+        try:
+            # 定义作者按钮的多种定位器（仿照关键词按钮的实现）
+            button_locators = [
+                (By.ID, 'authors'),  # 最直接的ID定位
+                (By.CSS_SELECTOR, 'button#authors'),  # ID+标签组合
+                (By.XPATH, '//button[contains(@aria-controls, "authors") and .//div[text()="Authors"]]'),  # 功能定位
+                (By.CSS_SELECTOR, 'button[aria-controls="authors"][aria-expanded]')  # 属性组合定位
+            ]
+
+            clicked = False
+            for locator in button_locators:
+                try:
+                    # 等待按钮出现
+                    author_button = WebDriverWait(self.driver, 20).until(
+                        EC.presence_of_element_located(locator)
+                    )
+
+                    # 滚动到按钮位置（确保可见）
+                    self.driver.execute_script("arguments[0].scrollIntoView({block: 'center', behavior: 'smooth'});",
+                                               author_button)
+                    time.sleep(2)  # 等待滚动完成
+
+                    # 检查当前状态，如果已经展开则不需要点击
+                    current_state = author_button.get_attribute('aria-expanded')
+                    if current_state == 'true':
+                        logging.info(f"作者面板已展开（定位器: {locator}）")
+                        clicked = True
+                        break
+
+                    # 检查是否被其他元素遮挡
+                    try:
+                        # 尝试直接点击
+                        author_button.click()
+                        logging.info(f"成功点击作者按钮（定位器: {locator}）")
+                        clicked = True
+                        break
+                    except ElementClickInterceptedException:
+                        # 被遮挡，使用JavaScript点击
+                        self.driver.execute_script("arguments[0].click();", author_button)
+                        logging.info(f"使用JavaScript点击作者按钮（定位器: {locator}）")
+                        clicked = True
+                        break
+                except TimeoutException:
+                    logging.info(f"未找到作者按钮（定位器: {locator}），尝试下一个")
+                    continue
+                except Exception as e:
+                    logging.warning(f"点击作者按钮失败（定位器: {locator}）: {str(e)}")
+                    continue
+
+            if not clicked:
+                logging.error("所有定位器都无法找到/点击作者按钮")
+                return False
+
+            # 点击后等待内容加载（关键！）
+            time.sleep(3)  # 等待折叠面板展开动画
+
+            # 验证内容是否已加载
+            try:
+                # 等待作者容器出现
+                WebDriverWait(self.driver, 15).until(
+                    EC.presence_of_element_located((By.CSS_SELECTOR, 'div.authors-accordion-container'))
+                )
+                logging.info("作者面板展开并加载完成")
+                return True
+            except TimeoutException:
+                logging.warning("作者面板点击后，内容未及时加载")
+                # 再次尝试点击（有时候需要点击两次）
+                try:
+                    author_button = self.driver.find_element(By.ID, 'authors')
+                    self.driver.execute_script("arguments[0].click();", author_button)
+                    logging.info("再次点击作者按钮")
+                    time.sleep(3)
+                    # 再次验证
+                    WebDriverWait(self.driver, 10).until(
+                        EC.presence_of_element_located((By.CSS_SELECTOR, 'div.authors-accordion-container'))
+                    )
+                    logging.info("作者面板第二次点击后加载完成")
+                    return True
+                except Exception as e:
+                    logging.error(f"第二次点击后仍未加载作者内容: {str(e)}")
+                    return False
+
+        except Exception as e:
+            logging.error(f"处理作者折叠面板时发生严重错误: {str(e)}")
+            return False
+
+    def _extract_keywords(self, soup):
+        """提取三种类型的关键词：IEEE Keywords、Index Terms、Author Keywords - 最终优化版"""
+        keywords = {
+            'ieee_keywords': [],
+            'index_terms': [],
+            'author_keywords': []
+        }
+
+        # 定义关键词类型映射
+        keyword_mapping = {
+            'ieee_keywords': 'IEEE Keywords',
+            'index_terms': 'Index Terms',
+            'author_keywords': 'Author Keywords'
+        }
+
+        # 第一步：找到关键词容器（基于用户提供的HTML结构）
+        # 尝试多种容器选择器，确保能找到（新增更多备选选择器）
+        container_selectors = [
+            'div.stats-keywords-container',  # 直接容器
+            'xpl-document-keyword-list section.keywords-tab',  # 父容器
+            'ul.doc-keywords-list.stats-keywords-list',  # 列表容器
+            'div.accordion-body#keywords div.stats-keywords-container',  # 完整路径
+            'div[_ngcontent-ng-c4006922076].accordion-body div.stats-keywords-container',  # 包含ng-content的容器
+            'div.accordion-item#keywords-item div.accordion-body',  # accordion-item父容器
+            'section.keywords-tab',  # 简化的父容器
+            'div.doc-keywords'  # 通用关键词容器
+        ]
+
+        keywords_container = None
+        for selector in container_selectors:
+            keywords_container = soup.select_one(selector)
+            if keywords_container:
+                logging.info(f"使用选择器找到关键词容器: {selector}")
+                break
+
+        if not keywords_container:
+            logging.error("未找到任何关键词容器，返回空关键词")
+            # 尝试直接从整个页面查找关键词相关元素（增强容错）
+            try:
+                # 直接查找所有关键词列表项（不限制父容器）
+                keyword_items = soup.select('li.doc-keywords-list-item')
+                if keyword_items:
+                    keywords_container = BeautifulSoup('<div></div>', 'html.parser')
+                    for item in keyword_items:
+                        keywords_container.div.append(item)
+                    logging.info(f"通过直接查找关键词列表项找到 {len(keyword_items)} 个关键词项")
+                else:
+                    # 尝试查找包含关键词标签的div
+                    keyword_divs = soup.select(
+                        'div:has(strong:contains("IEEE Keywords"), strong:contains("Index Terms"), strong:contains("Author Keywords"))')
+                    if keyword_divs:
+                        keywords_container = keyword_divs[0]
+                        logging.info(f"通过关键词标签找到容器: {keyword_divs[0].name}")
+            except Exception as e:
+                logging.warning(f"直接查找关键词列表项失败: {str(e)}")
+            if not keywords_container:
+                return keywords
+
+        # 第二步：遍历每种关键词类型，精确提取
+        for key, label in keyword_mapping.items():
+            try:
+                # 方法1：先找包含该标签的li元素（最精确）
+                keyword_li = keywords_container.find('li', class_='doc-keywords-list-item',
+                                                     string=lambda text: text and label in text)
+
+                if not keyword_li:
+                    # 方法2：直接找strong标签，再找父li
+                    strong_tag = keywords_container.find('strong', string=label)
+                    if strong_tag:
+                        keyword_li = strong_tag.find_parent('li', class_='doc-keywords-list-item')
+
+                if not keyword_li:
+                    # 方法3：不限制父容器，直接在整个soup中查找
+                    strong_tag = soup.find('strong', string=label)
+                    if strong_tag:
+                        keyword_li = strong_tag.find_parent('li', class_='doc-keywords-list-item')
+
+                if not keyword_li and strong_tag:
+                    # 方法4：如果找到strong标签但没有li父元素，直接用strong的父元素
+                    keyword_li = strong_tag.find_parent()
+
+                if keyword_li:
+                    # 提取所有关键词链接
+                    # 尝试多种链接选择器
+                    link_selectors = [
+                        'a.stats-keywords-list-item',
+                        'ul.List--inline li a',
+                        'ul.u-mt-1 a',
+                        'a[href*="/search/searchresult.jsp?matchBoolean=true&amp;queryText="]',
+                        'a[href*="/search/searchresult.jsp?queryText="]',
+                        'a.doc-keyword-link',  # 新增关键词链接类名
+                        'a[class*="keyword"]'  # 模糊匹配关键词链接
+                    ]
+
+                    keyword_links = []
+                    for link_selector in link_selectors:
+                        keyword_links = keyword_li.select(link_selector)
+                        if keyword_links:
+                            logging.debug(
+                                f"关键词类型 {label} 使用选择器 {link_selector} 找到 {len(keyword_links)} 个链接")
+                            break
+
+                    # 如果没有找到链接，直接提取文本
+                    if not keyword_links:
+                        try:
+                            # 提取li元素中的所有文本，排除strong标签
+                            all_text = keyword_li.get_text(separator=',', strip=True)
+                            # 移除标签文本
+                            all_text = all_text.replace(label, '').strip()
+                            if all_text:
+                                # 按逗号分割
+                                keyword_list = [kw.strip() for kw in all_text.split(',') if
+                                                kw.strip() and len(kw.strip()) > 1]
+                                keywords[key] = keyword_list
+                                logging.info(f"直接提取文本获取 {label}: {len(keyword_list)} 个关键词")
+                                continue
+                        except Exception as e:
+                            logging.warning(f"直接提取关键词文本失败: {str(e)}")
+
+                    # 提取关键词文本
+                    keyword_list = []
+                    for link in keyword_links:
+                        keyword_text = link.get_text(strip=True)
+                        if keyword_text:
+                            # 清理关键词（移除末尾逗号、空格等）
+                            cleaned_keyword = keyword_text.rstrip(',').rstrip('.').strip()
+                            # 过滤无效关键词
+                            if cleaned_keyword and len(cleaned_keyword) > 1 and cleaned_keyword not in keyword_list:
+                                keyword_list.append(cleaned_keyword)
+
+                    keywords[key] = keyword_list
+                    logging.info(f"成功提取 {label}: {len(keyword_list)} 个关键词 - {keyword_list[:5]}...")  # 只显示前5个
+                else:
+                    logging.debug(f"未找到 {label} 对应的元素")
+                    keywords[key] = []
+
+            except Exception as e:
+                logging.error(f"提取 {label} 时出错: {str(e)}", exc_info=True)
+                keywords[key] = []
+
+        # 验证是否提取到关键词
+        total_keywords = sum(len(v) for v in keywords.values())
+        if total_keywords == 0:
+            logging.warning("所有关键词类型都未提取到数据，尝试终极方案：直接提取文本")
+            try:
+                # 终极方案：直接提取所有文本，按标签分割
+                all_text = keywords_container.get_text(separator='|', strip=True)
+                # 按关键词标签分割
+                for key, label in keyword_mapping.items():
+                    if label in all_text:
+                        # 提取标签后的内容，直到下一个标签或结束
+                        parts = all_text.split(label)[1:]
+                        if parts:
+                            # 找到下一个标签的位置
+                            next_label_pos = len(parts[0])
+                            for next_label in keyword_mapping.values():
+                                if next_label != label and next_label in parts[0]:
+                                    next_label_pos = min(next_label_pos, parts[0].index(next_label))
+                            # 提取关键词部分
+                            keywords_part = parts[0][:next_label_pos]
+                            # 按逗号分割
+                            keyword_list = [kw.strip() for kw in keywords_part.split(',') if
+                                            kw.strip() and len(kw.strip()) > 1]
+                            keywords[key] = keyword_list
+                            logging.info(f"终极方案提取 {label}: {len(keyword_list)} 个关键词")
+            except Exception as e:
+                logging.error(f"终极方案提取关键词失败: {str(e)}")
+
+        return keywords
+
+    def _extract_author_details(self, soup):
+        """提取作者机构和作者简介"""
+        author_details = {
+            'author_affiliations': [],  # 作者机构列表（与authors顺序对应）
+            'author_bios': []  # 作者简介列表（与authors顺序对应）
+        }
+
+        try:
+            # 找到所有作者卡片容器（使用更通用的选择器）
+            author_items = soup.select('xpl-author-item, div.author-card')
+            logging.info(f"找到 {len(author_items)} 个作者卡片")
+
+            for author_item in author_items:
+                # 提取机构信息
+                affiliations = []
+                # 查找作者机构的div（多种可能的选择器）
+                affiliation_selectors = [
+                    'div[_ngcontent-ng-c2256705020].col-14-24 div[_ngcontent-ng-c2256705020]:not(:has(a))',
+                    'div.col-14-24 div:not(:has(a))',
+                    'div.author-affiliation',
+                    'div[_ngcontent-ng-c2256705020]:-soup-contains(",")',  # 修复：:contains → :-soup-contains
+                    'div.affiliation-text',  # 新增机构文本选择器
+                    'div.institution'  # 新增机构选择器
+                ]
+
+                for selector in affiliation_selectors:
+                    affiliation_divs = author_item.select(selector)
+                    if affiliation_divs:
+                        for div in affiliation_divs:
+                            aff_text = div.get_text(strip=True)
+                            # 过滤掉太短或明显不是机构的文本
+                            if aff_text and len(aff_text) > 5 and aff_text not in affiliations and \
+                                    not any(
+                                        word in aff_text.lower() for word in ['received', 'degree', 'phd', 'be', 'me']):
+                                affiliations.append(aff_text)
+                        if affiliations:
+                            break
+
+                # 提取作者简介
+                bio_text = ""
+                # 查找作者简介的span标签（多种可能的选择器）
+                bio_selectors = [
+                    'xpl-author-bio[_nghost-ng-c2723203832] span[_ngcontent-ng-c2723203832]',
+                    'xpl-author-bio span',
+                    'div.author-bio span',
+                    'span[_ngcontent-ng-c2723203832]',
+                    'div.bio-text',  # 新增简介文本选择器
+                    'p.author-bio'  # 新增简介选择器
+                ]
+
+                for selector in bio_selectors:
+                    bio_spans = author_item.select(selector)
+                    if bio_spans:
+                        # 取第一个非空的简介文本
+                        for span in bio_spans:
+                            bio_text = span.get_text(strip=True)
+                            if bio_text and len(bio_text) > 20:  # 简介通常较长
+                                break
+                        if bio_text:
+                            break
+
+                # 添加到结果列表
+                author_details['author_affiliations'].append(affiliations if affiliations else [])
+                author_details['author_bios'].append(bio_text if bio_text else "")
+
+            # 确保作者机构和简介列表与作者列表长度一致（如果不一致，补充空值）
+            authors_count = len(soup.select('div.authors-container a') or soup.select('xpl-author-item a'))
+            while len(author_details['author_affiliations']) < authors_count:
+                author_details['author_affiliations'].append([])
+            while len(author_details['author_bios']) < authors_count:
+                author_details['author_bios'].append("")
+
+            logging.info(f"提取完成：{len(author_details['author_affiliations'])} 个作者的机构和简介")
+        except Exception as e:
+            logging.error(f"提取作者机构和简介时出错: {str(e)}", exc_info=True)
+            # 保持返回结构一致
+            author_details['author_affiliations'] = []
+            author_details['author_bios'] = []
+
+        return author_details
+
     def get_paper_details(self, paper_id, force_refresh=False):
         """根据论文ID获取单篇论文的详细信息，并保存JSON缓存"""
-        logging.info(f"获取论文详情: ID={paper_id}")
+        logging.info(f"\n===== 开始获取论文详情: ID={paper_id} =====")
         paper_url = f"{self.base_url}/document/{paper_id}/"
         cache_file = f'json_cache/papers/paper_{paper_id}.json'
 
@@ -549,130 +980,158 @@ class IEEEScraper:
         if self.use_cache and os.path.exists(cache_file) and not force_refresh:
             cached_data = self._load_cached_json(cache_file)
             if cached_data:
-                return cached_data
+                # 检查是否已有关键词和作者详情数据
+                has_keywords = any(
+                    len(cached_data.get(key, [])) > 0 for key in ['ieee_keywords', 'index_terms', 'author_keywords'])
+                has_author_details = 'author_affiliations' in cached_data and 'author_bios' in cached_data
+                if has_keywords and has_author_details:
+                    logging.info(f"从缓存加载论文 {paper_id}（含关键词和作者详情数据）")
+                    return cached_data
+                else:
+                    logging.info(f"缓存中论文 {paper_id} 数据不完整，重新获取")
 
-        # 等待论文标题元素加载完成（使用更精确的选择器）
+        # 等待论文标题元素加载完成
         wait_for = (By.CSS_SELECTOR, 'h1.document-title span')
 
-        # 获取页面内容
-        soup = self._get_soup(paper_url, wait_for=wait_for)
-        if not soup:
+        # 获取页面内容（只获取一次页面，后续通过刷新源码获取动态内容）
+        self._get_soup(paper_url, wait_for=wait_for)
+        if not self.driver.page_source.strip():
+            logging.error(f"无法获取论文页面: {paper_url}")
             return None
 
         try:
-            # 提取标题 - 使用更精确的选择器组合
-            # 主选择器：匹配h1标题内的span
-            title_tag = soup.select_one('h1.document-title span')
+            # ========== 关键修改：分步提取，避免面板互斥 ==========
+            # 1. 提取基础信息（标题、作者、摘要等，不需要展开面板的信息）
+            base_soup = BeautifulSoup(self.driver.page_source, 'html.parser')
 
-            # 备选选择器1：使用ngcontent属性但结合h1
-            if not title_tag:
-                title_tag = soup.select_one('h1[_ngcontent-ng-c729932216] span[_ngcontent-ng-c729932216]')
+            # 提取标题
+            title_tag = base_soup.select_one('h1.document-title span') or \
+                        base_soup.select_one('h1[_ngcontent-ng-c729932216] span[_ngcontent-ng-c729932216]') or \
+                        base_soup.select_one('.document-title span')
+            title = title_tag.get_text(strip=True) if title_tag else "No title"
+            logging.info(f"论文标题: {title[:50]}...")  # 只显示前50个字符
 
-            # 备选选择器2：仅使用class
-            if not title_tag:
-                title_tag = soup.select_one('.document-title span')
-
-            # 如果找到标题标签则提取文本，否则标记为无标题
-            if title_tag:
-                title = title_tag.get_text(strip=True)
-                # 过滤无效标题
-                if "Journals & Magazines" in title or len(title) < 5:
-                    logging.warning(f"可能的无效标题: {title}，尝试其他方式提取")
-                    # 尝试从页面元数据中提取标题
-                    meta_title = soup.select_one('meta[property="og:title"]')
-                    if meta_title:
-                        title = meta_title.get('content', '').strip()
-            else:
-                title = "No title"
-
-            logging.info(f"提取到标题: {title}")
-
-            # 提取作者
+            # 提取作者（基础作者名，不需要展开面板）
             authors = []
-            author_tags = soup.select('div.authors-container.stats-document-authors-banner-authorsContainer a')
-
+            author_tags = base_soup.select('div.authors-container.stats-document-authors-banner-authorsContainer a')
+            # 如果没找到，尝试其他选择器
+            if not author_tags:
+                author_tags = base_soup.select('xpl-author-item a, div.author-card a')
             for author in author_tags:
                 author_name = author.get_text(strip=True)
                 if author_name and author_name not in authors and len(author_name) > 1:
                     authors.append(author_name)
+            logging.info(f"作者: {authors[:3]}...")  # 只显示前3个作者
 
             # 提取摘要
             abstract = "No abstract"
-            abstract_tag = soup.select_one('div[_ngcontent-ng-c4049499152][xplmathjax][xplreadinglenshighlight]')
-            if abstract_tag:
-                abstract = abstract_tag.get_text(strip=True)
-            else:
-                # 尝试点击Abstract按钮获取摘要
+            abstract_tag = base_soup.select_one('div[_ngcontent-ng-c4049499152][xplmathjax][xplreadinglenshighlight]')
+            if not abstract_tag:
                 try:
-                    abstract_button = self.driver.find_element(
-                        By.CSS_SELECTOR, 'button.abstract-control'
-                    )
+                    abstract_button = self.driver.find_element(By.CSS_SELECTOR, 'button.abstract-control')
                     if abstract_button:
                         self.driver.execute_script("arguments[0].click();", abstract_button)
-                        time.sleep(1)  # 等待摘要展开
-
-                        # 重新获取页面内容
-                        updated_soup = BeautifulSoup(self.driver.page_source, 'html.parser')
-                        abstract_tag = updated_soup.select_one(
+                        time.sleep(2)
+                        abstract_tag = BeautifulSoup(self.driver.page_source, 'html.parser').select_one(
                             'div[_ngcontent-ng-c4049499152][xplmathjax][xplreadinglenshighlight]')
-                        if abstract_tag:
-                            abstract = abstract_tag.get_text(strip=True)
                 except Exception as e:
                     logging.warning(f"提取摘要时出错: {str(e)}")
+            if abstract_tag:
+                abstract = abstract_tag.get_text(strip=True)
+            logging.info(f"摘要长度: {len(abstract)} 字符")
 
             # 提取引用量
             citations = "No citation data"
-            citation_tag = soup.select_one('div[_ngcontent-ng-c729932216].document-banner-metric-count')
+            citation_tag = base_soup.select_one('div[_ngcontent-ng-c729932216].document-banner-metric-count')
             if citation_tag:
                 citations = citation_tag.get_text(strip=True)
 
             # 提取发表日期
             publication_date = "No publication date"
-            date_tag = soup.select_one('div[_ngcontent-ng-c4049499152].u-pb-1.doc-abstract-pubdate')
+            date_tag = base_soup.select_one('div[_ngcontent-ng-c4049499152].u-pb-1.doc-abstract-pubdate')
             if date_tag:
                 date_text = date_tag.get_text(strip=True)
-                # 提取日期部分
-                date_match = date_text.replace('Date of Publication:', '').strip()
-                if date_match:
-                    publication_date = date_match
+                publication_date = date_text.replace('Date of Publication:', '').strip()
 
             # 提取DOI
             doi = "No DOI"
-            doi_tag = soup.select_one(
+            doi_tag = base_soup.select_one(
                 'div[_ngcontent-ng-c4049499152][data-analytics_identifier="document_abstract_doi"] a')
             if doi_tag:
                 doi = doi_tag.get_text(strip=True)
 
             # 提取PubMed ID
             pubmed_id = "No PubMed ID"
-            pubmed_tag = soup.select_one('div[_ngcontent-ng-c4049499152].u-pb-1:has(strong:contains("PubMed ID:")) a')
-            if pubmed_tag:
-                pubmed_id = pubmed_tag.get_text(strip=True)
-            else:
-                # 备选方案
-                pubmed_div = soup.select_one('div[_ngcontent-ng-c4049499152].u-pb-1:has(strong:contains("PubMed ID:"))')
+            # 修复：:contains → :-soup-contains
+            pubmed_tag = base_soup.select_one(
+                'div[_ngcontent-ng-c4049499152].u-pb-1:has(strong:-soup-contains("PubMed ID:")) a')
+            if not pubmed_tag:
+                # 修复：:contains → :-soup-contains
+                pubmed_div = base_soup.select_one(
+                    'div[_ngcontent-ng-c4049499152].u-pb-1:has(strong:-soup-contains("PubMed ID:"))')
                 if pubmed_div:
                     pubmed_text = pubmed_div.get_text(strip=True)
                     pubmed_id = pubmed_text.replace('PubMed ID:', '').strip()
+
+            # 2. 提取关键词：展开关键词面板 → 提取 → 不关闭（后续会被作者面板顶掉，但已经提取完了）
+            logging.info("开始提取关键词...")
+            keywords = {}
+            if self._click_keywords_accordion():
+                # 关键词面板展开后，立即获取当前页面源码
+                keywords_soup = BeautifulSoup(self.driver.page_source, 'html.parser')
+                keywords = self._extract_keywords(keywords_soup)
+            else:
+                logging.error("关键词面板展开失败，关键词为空")
+                keywords = {'ieee_keywords': [], 'index_terms': [], 'author_keywords': []}
+
+            # 3. 提取作者详情：展开作者面板 → 提取（此时关键词面板会自动折叠，但已提取完成）
+            logging.info("开始提取作者机构和简介...")
+            author_details = {}
+            if self._click_authors_accordion():
+                # 作者面板展开后，立即获取当前页面源码
+                authors_soup = BeautifulSoup(self.driver.page_source, 'html.parser')
+                author_details = self._extract_author_details(authors_soup)
+            else:
+                logging.error("作者面板展开失败，作者详情为空")
+                author_details = {'author_affiliations': [], 'author_bios': []}
+
+            # ========== 数据整合 ==========
+            # 打印关键词提取结果（方便调试）
+            logging.info(f"关键词提取结果:")
+            logging.info(f"  IEEE Keywords: {len(keywords['ieee_keywords'])} 个")
+            logging.info(f"  Index Terms: {len(keywords['index_terms'])} 个")
+            logging.info(f"  Author Keywords: {len(keywords['author_keywords'])} 个")
+
+            # 打印作者详情提取结果
+            logging.info(f"作者详情提取结果:")
+            logging.info(f"  作者数量: {len(authors)}")
+            logging.info(f"  机构信息数量: {len(author_details['author_affiliations'])}")
+            logging.info(f"  简介信息数量: {len(author_details['author_bios'])}")
 
             paper_info = {
                 'id': paper_id,
                 'title': title,
                 'authors': authors,
+                'author_affiliations': author_details['author_affiliations'],  # 新增字段：作者机构
+                'author_bios': author_details['author_bios'],  # 新增字段：作者简介
                 'abstract': abstract,
                 'citations': citations,
                 'publication_date': publication_date,
                 'doi': doi,
                 'pubmed_id': pubmed_id,
-                'url': paper_url
+                'url': paper_url,
+                'ieee_keywords': keywords['ieee_keywords'],
+                'index_terms': keywords['index_terms'],
+                'author_keywords': keywords['author_keywords']
             }
 
             # 保存论文详情到JSON缓存
             self._save_json(paper_info, cache_file)
+            logging.info(f"论文 {paper_id} 详情保存完成")
 
             return paper_info
         except Exception as e:
-            logging.error(f"解析论文 ID={paper_id} 失败: {str(e)}")
+            logging.error(f"解析论文 ID={paper_id} 失败: {str(e)}", exc_info=True)
             return None
 
     def run(self, max_decades=None, max_years_per_decade=None, max_issues=None, max_papers_per_issue=None,
@@ -693,7 +1152,18 @@ class IEEEScraper:
                 if paper_details:
                     self.all_papers.append(paper_details)
 
-        logging.info(f"爬取完成，共获取 {len(self.all_papers)} 篇论文数据")
+        logging.info(f"\n===== 爬取完成，共获取 {len(self.all_papers)} 篇论文数据 =====")
+        # 统计关键词提取情况
+        papers_with_keywords = sum(1 for p in self.all_papers if any(
+            len(p.get(key, [])) > 0 for key in ['ieee_keywords', 'index_terms', 'author_keywords']))
+        logging.info(f"其中 {papers_with_keywords} 篇论文成功提取到关键词")
+
+        # 统计作者详情提取情况
+        papers_with_author_details = sum(1 for p in self.all_papers if
+                                         len(p.get('author_affiliations', [])) > 0 or
+                                         len(p.get('author_bios', [])) > 0)
+        logging.info(f"其中 {papers_with_author_details} 篇论文成功提取到作者详情")
+
         # 关闭浏览器
         self.driver.quit()
         return self.all_papers
@@ -708,10 +1178,8 @@ class IEEEScraper:
 
 
 if __name__ == "__main__":
-    # 爬取punumber=34的期刊，可通过use_cache=False禁用缓存
     scraper = IEEEScraper(punumber=34, use_cache=True)
 
-    # force_refresh=True 可强制刷新缓存
     scraper.run(
         force_refresh=False
     )

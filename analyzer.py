@@ -114,13 +114,13 @@ class AMinerAnalyzer:
 
             author_papers = self.controller.get_author_papers(author_name, org, force_refresh)
 
-            if not author_papers or "papers" not in author_papers:
+            if not author_papers or "papers_old" not in author_papers:
                 print(f"未获取到 {author_name} 的论文数据，跳过")
                 continue
 
             self.controller.batch_save_papers(author_name, org, force_refresh)
 
-            filtered_papers = self._filter_papers_by_year(author_papers["papers"])
+            filtered_papers = self._filter_papers_by_year(author_papers["papers_old"])
             print(f"筛选出 {len(filtered_papers)} 篇 {2015}-{2025} 年且有摘要的论文")
 
             for paper in filtered_papers:
@@ -158,10 +158,10 @@ class AMinerAnalyzer:
 
                 # 构建提示词（英文）
                 prompt = f"""
-                Task: Extract 5-8 keywords that best represent the core content of the paper from the following title and abstract.
+                Task: Extract 5-8 keywords that best represent the core content of the papers from the following title and abstract.
 
                 Requirements:
-                1. Keywords should accurately reflect the research content and theme of the paper
+                1. Keywords should accurately reflect the research content and theme of the papers
                 2. Avoid overly broad or overly specific terms
                 3. Output must be in strict JSON format without any additional explanatory text
                 4. JSON structure: {{"keywords": ["keyword1", "keyword2", ...]}}
@@ -174,7 +174,7 @@ class AMinerAnalyzer:
                 # 调用大模型
                 response_content = self._call_glm_api(
                     prompt,
-                    "You are a professional academic paper analysis tool, specialized in extracting core keywords from paper titles and abstracts. Please respond in English."
+                    "You are a professional academic papers analysis tool, specialized in extracting core keywords from papers titles and abstracts. Please respond in English."
                 )
 
                 if not response_content:
@@ -317,7 +317,7 @@ class AMinerAnalyzer:
 
         # 构建英文提示词
         prompt = """
-        Task: Analyze the following collection of research paper abstracts and extract the core research themes and key concepts.
+        Task: Analyze the following collection of research papers abstracts and extract the core research themes and key concepts.
 
         Requirements:
         1. Extract several core theme words or phrases that best represent these abstracts
@@ -333,7 +333,7 @@ class AMinerAnalyzer:
 
         response_content = self._call_glm_api(
             prompt,
-            "You are a professional literature analysis tool, specialized in extracting core themes and research concepts from academic papers. Please respond in English."
+            "You are a professional literature analysis tool, specialized in extracting core themes and research concepts from academic papers_old. Please respond in English."
         )
 
         if not response_content:

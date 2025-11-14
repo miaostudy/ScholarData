@@ -309,7 +309,7 @@ class CSRankings {
             'usenixatc': 'ops',  // next tier
             'popl': 'plan',
             'pldi': 'plan',
-            'oopsla': 'plan', // next tier 
+            'oopsla': 'plan', // next tier
             'icfp': 'plan',   // next tier
             'fse': 'soft',
             'icse': 'soft',
@@ -568,7 +568,7 @@ class CSRankings {
 	name = he.encode(name, { 'useNamedReferences' : true, 'allowUnsafeSymbols' : true });
 	name = name.replace(/&/g, "=");
 	name = name.replace(/;/g, "=");
-	
+
 	let splitName = name.split(" ");
 	let lastName = splitName[splitName.length - 1];
 	let disambiguation = "";
@@ -698,7 +698,7 @@ class CSRankings {
 
         // Split the names as strings into arrays,
 	// removing any disambiguation suffixes first.
-	
+
         const aName = this.removeDisambiguationSuffix(a).split(" ");
         const bName = this.removeDisambiguationSuffix(b).split(" ");
 
@@ -710,7 +710,7 @@ class CSRankings {
         const bLastName = bName[bName.length - 1];
 
 	let returnValue : number;
-	
+
         // compare the names and return either
         // a negative number, positive number
         // or zero.
@@ -721,7 +721,7 @@ class CSRankings {
 	} else {
 	    returnValue = 0;
 	}
-	
+
         return returnValue;
     }
 
@@ -761,7 +761,7 @@ class CSRankings {
             // Use adjusted count if this is for a department.
             /*
               DISABLED so department charts are invariant.
-              
+
               if (uname in this.stats) {
               value = this.areaDeptAdjustedCount[key+uname] + 1;
               if (value == 1) {
@@ -793,7 +793,7 @@ class CSRankings {
             area.label = this.areaDict[area.key];
         });
 
-        const colors = areas.sort((a, b) => 
+        const colors = areas.sort((a, b) =>
             a.label > b.label ? 1 : (a.label < b.label ? -1 : 0)
             ).map(area => area.color);
 
@@ -888,8 +888,8 @@ class CSRankings {
             height: 250,
             padding: {left: 25, top: 3}
         };
-        
-        vegaEmbed(`div[id="${name}-chart"]`, 
+
+        vegaEmbed(`div[id="${name}-chart"]`,
             isPieChart ? vegaLitePieChartSpec : vegaLiteBarChartSpec,
             {actions: false}
         );
@@ -1143,7 +1143,7 @@ class CSRankings {
             /*
               DISABLING weight selection so all pie charts look the
               same regardless of which areas are currently selected:
-              
+
               if (weights[theArea] === 0) {
               continue;
               }
@@ -1275,7 +1275,7 @@ class CSRankings {
         return numAreas;
     }
 
-    /* Build drop down for faculty names and paper counts. */
+    /* Build drop down for faculty names and papers counts. */
     private buildDropDown(deptNames: { [key: string]: Array<string> },
         facultycount: { [key: string]: number },
         facultyAdjustedCount: { [key: string]: number })
@@ -1385,7 +1385,7 @@ class CSRankings {
         s = s + '<thead><tr><th align="left"><font color="#777">#</font></th><th align="left"><font color="#777">Institution</font>'
             + '&nbsp;'.repeat(20)      /* Hopefully max length of an institution. */
             + '</th><th align="right">'
-            + '<abbr title="Geometric mean count of papers published across all areas."><font color="#777">Count</font>'
+            + '<abbr title="Geometric mean count of papers_old published across all areas."><font color="#777">Count</font>'
             + '</abbr></th><th align="right">&nbsp;<abbr title="Number of faculty who have published in these areas."><font color="#777">Faculty</font>'
             + '</abbr></th></th></tr></thead>';
 
@@ -1439,7 +1439,7 @@ class CSRankings {
                 }
 
 		const country = this.countryNames[abbrv.toUpperCase()] ?? abbrv.toUpperCase();
-		
+
                 s += "&nbsp;" + `<span onclick="csr.toggleFaculty('${esc}');">${dept}</span>`
 		  + `&nbsp;<img  title="${country}" src="/flags/${abbrv}.png">&nbsp;`
                     + `<span class="hovertip" onclick='csr.toggleChart("${esc}"); ga("send", "event", "chart", "toggle-department", "toggle ${esc} ${$("#charttype").find(":selected").val()} chart");' id='${esc + "-chartwidget"}'>`
@@ -1450,7 +1450,7 @@ class CSRankings {
                 s += `<td align="right">${deptCounts[dept]}`; /* number of faculty */
                 s += "</td>";
                 s += "</tr>\n";
-                // style="width: 100%; height: 350px;" 
+                // style="width: 100%; height: 350px;"
                 s += `<tr><td colspan="4"><div class="csr-chart" id="${esc}-chart"></div></td></tr>`;
                 s += `<tr><td colspan="4"><div style="display:none;" id="${esc}-faculty">${univtext[dept]}</div></td></tr>`;
                 ties++;
@@ -1525,7 +1525,7 @@ class CSRankings {
             facultycount,
             facultyAdjustedCount);
 
-        /* (university, total or average number of papers) */
+        /* (university, total or average number of papers_old) */
         this.computeStats(deptNames,
             numAreas,
             currentWeights);
@@ -1706,7 +1706,7 @@ class CSRankings {
             start += `/fromyear/${startyear.toString()}`;
             start += `/toyear/${endyear.toString()}`;
         }
-        
+
         if (count == totalParents) {
             start += '/index?all'; // Distinguished special URL - default = all selected.
         } else if (count == 0) {
@@ -1717,7 +1717,7 @@ class CSRankings {
         if (region != "USA") {
             start += `&${region}`;
         }
-        
+
         const chartType = $("#charttype").find(":selected").val();
         if (chartType == "pie") {
             this.usePieChart = true;
@@ -1747,7 +1747,7 @@ class CSRankings {
 	    this.ChartIcon = this.BarChartIcon;
 	    this.OpenChartIcon = this.OpenBarChartIcon;
         }
-        
+
         return start;
     }
 
@@ -1850,7 +1850,7 @@ class CSRankings {
         if (foundPie) {
             $("#charttype").val("pie");
         }
-        
+
         if (foundAll) {
             // Set everything.
             for (const item in CSRankings.topTierAreas) {

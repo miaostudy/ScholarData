@@ -1157,7 +1157,7 @@ Examples:
 # Retrieve one article written by Einstein on quantum theory:
 scholar.py -c 1 --author "albert einstein" --phrase "quantum theory"
 
-# Retrieve a BibTeX entry for that quantum theory paper:
+# Retrieve a BibTeX entry for that quantum theory papers:
 scholar.py -c 1 -C 17749203648027613321 --citation bt
 
 # Retrieve five articles written by Einstein after 1970 where the title

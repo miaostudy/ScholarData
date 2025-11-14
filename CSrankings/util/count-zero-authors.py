@@ -49,7 +49,7 @@ def parseDBLP(facultydict):
                     # Out of range.
                     continue
 
-                # Now, count up how many faculty from our list are on this paper.
+                # Now, count up how many faculty from our list are on this papers.
 
                 for child in node:
                     if child.tag == "author":
@@ -69,9 +69,9 @@ def parseDBLP(facultydict):
                         pageCount = csrankings.pagecount(child.text)
 
                 if (pageCount > 1) and (pageCount < csrankings.pageCountThreshold):
-                    # Only skip papers with a very small paper count,
+                    # Only skip papers_old with a very small papers count,
                     # but above 1. Why?
-                    # DBLP has real papers with incorrect page counts
+                    # DBLP has real papers_old with incorrect page counts
                     # - usually a truncated single page. -1 means no
                     # pages found at all => some problem with journal
                     # entries in DBLP.

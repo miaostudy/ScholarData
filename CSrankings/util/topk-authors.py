@@ -23,7 +23,7 @@
 # -- produce the CSV for all ASPLOS authors (in the CSrankings database) from 2000 to 2022.
 # % python3 util/topk-authors.py --conference=ASPLOS -s 2000 -e 2022
 
-# -- produce the above CSV followed by a Hall of Fame list of authors with at least 8 papers
+# -- produce the above CSV followed by a Hall of Fame list of authors with at least 8 papers_old
 # % python3 util/topk-authors.py --conference=ASPLOS -s 2000 -e 2022 -p 1
 
 # The output CSV is of the following format:
@@ -58,7 +58,7 @@ parser = OptionParser()
 parser.add_option(
     "--conference",
     dest="conference",
-    help="filter only papers that appeared in a particular conference (e.g., ISCA, ASPLOS)",
+    help="filter only papers_old that appeared in a particular conference (e.g., ISCA, ASPLOS)",
 )
 
 parser.add_option(
@@ -94,7 +94,7 @@ parser.add_option(
     "--print-hof",
     dest="printHOF",
     default=0,
-    help="printed sorted HOF members, with paper counts",
+    help="printed sorted HOF members, with papers counts",
 )
 
 parser.add_option(
@@ -102,7 +102,7 @@ parser.add_option(
     "--print-close",
     dest="printClose",
     default=0,
-    help="printed people close to HOF membership, with paper counts",
+    help="printed people close to HOF membership, with papers counts",
 )
 
 (options, args) = parser.parse_args()

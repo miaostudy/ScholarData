@@ -11,8 +11,8 @@ import time
 TESSERACT_PATH = r'D:\tesseract\tesseract.exe'
 GLM_API_KEY = "38ef8158834549efa2404f4cb748cf73.fO94Wjp0BxJ80a1T"
 # 超时与重试设置
-API_TIMEOUT = 300
-API_RETRY = 3  # 增加重试次数，提高成功率
+API_TIMEOUT = 360
+API_RETRY = 1
 
 
 class PDFTOCExtractorWithLLM:
@@ -306,7 +306,7 @@ class PDFTOCExtractorWithLLM:
             all_toc_items = []
             in_toc_region = False
 
-            for page_num in range(9, max_process):
+            for page_num in range(max_process):
                 print(f"\n处理第{page_num + 1}/{max_process}页...")
 
                 page_text = self._extract_single_page_text(pdf_path, page_num)

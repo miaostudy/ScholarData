@@ -30,7 +30,7 @@ def parseDBLP():
                     # Nope.
                     continue
 
-                # Now, count up how many faculty from our list are on this paper.
+                # Now, count up how many faculty from our list are on this papers.
 
                 for child in node:
                     if child.tag == "author":

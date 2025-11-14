@@ -110,7 +110,7 @@ class AMinerController:
 
         if not force_refresh and author_key in self.author_papers_map:
             cached_data = self.author_papers_map[author_key]
-            actual_count = len(cached_data.get('papers', []))
+            actual_count = len(cached_data.get('papers_old', []))
             if cached_data.get('total_papers') != actual_count:
                 print(f"检测到论文数量不匹配，将重新获取数据...")
                 force_refresh = True
@@ -140,7 +140,7 @@ class AMinerController:
                         "org": org,
                         "author_id": author_id,
                         "total_papers": len(result["data"]),
-                        "papers": [{"paper_id": item["id"], "title": item["title"]} for item in result["data"]],
+                        "papers_old": [{"paper_id": item["id"], "title": item["title"]} for item in result["data"]],
                         "fetch_time": time.strftime("%Y-%m-%d %H:%M:%S")
                     }
                     self.author_papers_map[author_key] = papers_data
@@ -195,24 +195,24 @@ class AMinerController:
         print(f"开始批量处理作者 [{author_name}] 的论文详情...")
 
         author_papers = self.get_author_papers(author_name, org, force_refresh)
-        if not author_papers or "papers" not in author_papers:
+        if not author_papers or "papers_old" not in author_papers:
             print("无法获取作者的论文列表，终止批量操作")
             return None
 
-        actual_count = len(author_papers["papers"])
+        actual_count = len(author_papers["papers_old"])
         if author_papers.get("total_papers") != actual_count:
             print(f"检测到论文数量不匹配，重新获取数据后处理...")
             author_papers = self.get_author_papers(author_name, org, force_refresh=True)
-            if not author_papers or "papers" not in author_papers:
+            if not author_papers or "papers_old" not in author_papers:
                 print("重新获取后仍无法获取有效论文列表，终止操作")
                 return None
 
-        total = len(author_papers["papers"])
+        total = len(author_papers["papers_old"])
         success = 0
         fail = 0
 
         papers_to_fetch = []
-        for paper in author_papers["papers"]:
+        for paper in author_papers["papers_old"]:
             paper_id = paper["paper_id"]
             if force_refresh or paper_id not in self.paper_details_map:
                 papers_to_fetch.append(paper_id)
@@ -231,8 +231,8 @@ class AMinerController:
                 print(f"处理论文 {paper_id} 时发生异常: {str(e)}")
                 fail += 1
 
-        # for i, paper in tqdm(enumerate(author_papers["papers"], 1)):
-        #     paper_id = paper["paper_id"]
+        # for i, papers in tqdm(enumerate(author_papers["papers_old"], 1)):
+        #     paper_id = papers["paper_id"]
         #     if self.get_paper_details(paper_id, force_refresh) is not None:
         #         success += 1
         #     else:
