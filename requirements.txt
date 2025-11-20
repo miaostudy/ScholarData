@@ -10,4 +10,4 @@ pytesseract
 selenium
 BeautifulSoup4
 webdriver_manager
-
+neo4j
